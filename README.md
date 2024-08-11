@@ -42,7 +42,7 @@ npx obsohtml -f ../path/to/folder
 
 #### Installation
 
-Download or fork this repository.
+Download or fork [the source repository](https://github.com/j9t/obsohtml).
 
 #### Execution
 
