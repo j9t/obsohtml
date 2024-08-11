@@ -19,23 +19,24 @@ const obsoleteElements = [
 // Default project directory (user’s home directory)
 const defaultProjectDirectory = os.homedir();
 
-// Function to find obsolete attributes and elements in a file
-function findObsolete(filePath) {
+// Function to find obsolete elements and attributes in a file
+async function findObsolete(filePath) {
+  const chalk = await import('chalk');
   const content = fs.readFileSync(filePath, 'utf8');
-
-  // Check for obsolete attributes
-  obsoleteAttributes.forEach(attribute => {
-    const attributeRegex = new RegExp(`<[^>]*\\b${attribute}\\s*=\\s*(\"[^\"]*\"|'[^']*'|[^\"'\\s>]+)`, 'i');
-    if (attributeRegex.test(content)) {
-      console.log(`Found obsolete attribute '${attribute}' in ${filePath}`);
-    }
-  });
 
   // Check for obsolete elements
   obsoleteElements.forEach(element => {
     const elementRegex = new RegExp(`<\\s*${element}\\b`, 'i');
     if (elementRegex.test(content)) {
-      console.log(`Found obsolete element '${element}' in ${filePath}`);
+      console.log(chalk.default.blue(`Found obsolete element ${chalk.default.bold(`'${element}'`)} in ${filePath}`));
+    }
+  });
+
+  // Check for obsolete attributes
+  obsoleteAttributes.forEach(attribute => {
+    const attributeRegex = new RegExp(`<[^>]*\\b${attribute}\\s*=\\s*(\"[^\"]*\"|'[^']*'|[^\"'\\s>]+)`, 'i');
+    if (attributeRegex.test(content)) {
+      console.log(chalk.default.green(`Found obsolete attribute ${chalk.default.bold(`'${attribute}'`)} in ${filePath}`));
     }
   });
 }
@@ -79,8 +80,8 @@ function walkDirectory(directory) {
 }
 
 // Main function to execute the script
-function main(projectDirectory = defaultProjectDirectory) {
-  walkDirectory(projectDirectory);
+async function main(projectDirectory = defaultProjectDirectory) {
+  await walkDirectory(projectDirectory);
 }
 
 // Define command line options
