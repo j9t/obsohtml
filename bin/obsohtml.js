@@ -65,7 +65,7 @@ function walkDirectory(directory) {
         if (file !== 'node_modules') {
           walkDirectory(fullPath);
         }
-      } else if (fullPath.endsWith('.html') || fullPath.endsWith('.php')) {
+      } else if (fullPath.endsWith('.htm') || fullPath.endsWith('.html') || fullPath.endsWith('.js') || fullPath.endsWith('.ts') || fullPath.endsWith('.php')) {
         findObsolete(fullPath);
       }
     } catch (err) {

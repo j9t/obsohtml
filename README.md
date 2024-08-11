@@ -1,6 +1,6 @@
 # ObsoHTML HTML Checker
 
-ObsoHTML is a Node.js script designed to scan HTML and PHP files within a specified directory for obsolete or proprietary HTML attributes and elements. It helps you identify and update deprecated HTML code to ensure modern web standards compliance.
+ObsoHTML is a Node.js script designed to scan HTML, JavaScript, TypeScript, and PHP files within a specified directory for obsolete or proprietary HTML attributes and elements. It helps you identify and update deprecated HTML code to ensure modern web standards compliance.
 
 ## Usage
 
