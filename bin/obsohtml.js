@@ -6,14 +6,14 @@ const os = require('os');
 const { Command } = require('commander');
 const program = new Command();
 
-// List of obsolete or proprietary HTML attributes
-const obsoleteAttributes = [
-  'align', 'bgcolor', 'border', 'frameborder', 'marginwidth', 'marginheight', 'scrolling', 'valign', 'hspace', 'vspace', 'noshade', 'nowrap'
-];
-
 // List of obsolete or proprietary HTML elements
 const obsoleteElements = [
   'acronym', 'applet', 'basefont', 'bgsound', 'big', 'blink', 'center', 'command', 'content', 'dir', 'element', 'font', 'frame', 'frameset', 'image', 'isindex', 'keygen', 'listing', 'marquee', 'menuitem', 'multicol', 'nextid', 'nobr', 'noembed', 'noframes', 'plaintext', 'shadow', 'spacer', 'strike', 'tt', 'xmp'
+];
+
+// List of obsolete or proprietary HTML attributes
+const obsoleteAttributes = [
+  'align', 'bgcolor', 'border', 'frameborder', 'marginwidth', 'marginheight', 'scrolling', 'valign', 'hspace', 'vspace', 'noshade', 'nowrap'
 ];
 
 // Default project directory (user’s home directory)
@@ -66,7 +66,7 @@ function walkDirectory(directory) {
         if (file !== 'node_modules') {
           walkDirectory(fullPath);
         }
-      } else if (fullPath.endsWith('.htm') || fullPath.endsWith('.html') || fullPath.endsWith('.js') || fullPath.endsWith('.ts') || fullPath.endsWith('.php')) {
+      } else if (fullPath.endsWith('.html') || fullPath.endsWith('.htm') || fullPath.endsWith('.php') || fullPath.endsWith('.js') || fullPath.endsWith('.ts')) {
         findObsolete(fullPath);
       }
     } catch (err) {
