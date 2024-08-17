@@ -34,7 +34,7 @@ async function findObsolete(filePath) {
 
   // Check for obsolete attributes
   obsoleteAttributes.forEach(attribute => {
-    const attributeRegex = new RegExp(`<[^>]*\\b${attribute}\\s*=\\s*(\"[^\"]*\"|'[^']*'|[^\"'\\s>]+)`, 'i');
+    const attributeRegex = new RegExp(`<[^>]*\\b${attribute}\\b(?=\\s*(=|\\s*[/]*>))`, 'i');
     if (attributeRegex.test(content)) {
       console.log(chalk.default.green(`Found obsolete attribute ${chalk.default.bold(`'${attribute}'`)} in ${filePath}`));
     }
