@@ -43,7 +43,9 @@ async function findObsolete(filePath) {
 
 // Function to walk through the project directory, excluding node_modules directories
 function walkDirectory(directory) {
+  const MAX_PATH_LENGTH = 255; // Adjust this value based on your OS limits
   let files;
+
   try {
     files = fs.readdirSync(directory);
   } catch (err) {
@@ -61,7 +63,17 @@ function walkDirectory(directory) {
   files.forEach(file => {
     const fullPath = path.join(directory, file);
 
+    if (fullPath.length > MAX_PATH_LENGTH) {
+      console.warn(`Skipping file or directory with path too long: ${fullPath}`);
+      return;
+    }
+
     try {
+      const stats = fs.lstatSync(fullPath);
+      if (stats.isSymbolicLink()) {
+        console.warn(`Skipping symbolic link: ${fullPath}`);
+        return;
+      }
       if (fs.statSync(fullPath).isDirectory()) {
         if (file !== 'node_modules') {
           walkDirectory(fullPath);
