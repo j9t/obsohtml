@@ -27,31 +27,31 @@ describe('ObsoHTML', () => {
   });
 
   test('Detect obsolete elements', () => {
-    const result = spawnSync('node', ['bin/obsohtml.js', '-f', tempDir], { encoding: 'utf-8' });
+    const result = spawnSync('node', ['bin/obsohtml.js', '-f', tempDir, '-v'], { encoding: 'utf-8' });
     expect(result.stdout).toContain("Found obsolete element 'center'");
   });
 
   test('Detect obsolete attributes', () => {
-    const result = spawnSync('node', ['bin/obsohtml.js', '-f', tempDir], { encoding: 'utf-8' });
+    const result = spawnSync('node', ['bin/obsohtml.js', '-f', tempDir, '-v'], { encoding: 'utf-8' });
     expect(result.stdout).toContain("Found obsolete attribute 'align'");
   });
 
   test('Detect obsolete elements and attributes using absolute path', () => {
     const absolutePath = path.resolve(tempDir);
-    const result = spawnSync('node', ['bin/obsohtml.js', '-f', absolutePath], { encoding: 'utf-8' });
+    const result = spawnSync('node', ['bin/obsohtml.js', '-f', absolutePath, '-v'], { encoding: 'utf-8' });
     expect(result.stdout).toContain("Found obsolete element 'center'");
     expect(result.stdout).toContain("Found obsolete attribute 'align'");
   });
 
   test('Detect obsolete elements and attributes using relative path', () => {
     const relativePath = path.relative(process.cwd(), tempDir);
-    const result = spawnSync('node', ['bin/obsohtml.js', '--folder', relativePath], { encoding: 'utf-8' });
+    const result = spawnSync('node', ['bin/obsohtml.js', '--folder', relativePath, '-v'], { encoding: 'utf-8' });
     expect(result.stdout).toContain("Found obsolete element 'center'");
     expect(result.stdout).toContain("Found obsolete attribute 'align'");
   });
 
   test('Detect obsolete minimized attributes', () => {
-    const result = spawnSync('node', ['bin/obsohtml.js', '-f', tempDir], { encoding: 'utf-8' });
+    const result = spawnSync('node', ['bin/obsohtml.js', '-f', tempDir, '-v'], { encoding: 'utf-8' });
     expect(result.stdout).toContain("Found obsolete attribute 'noshade'");
   });
 });
