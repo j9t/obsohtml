@@ -77,3 +77,7 @@ The script will output messages to the console indicating any obsolete attribute
 ## Background
 
 This started as an experiment, in which I used AI to produce this little HTML quality helper, its tests, and its documentation. While it’s pretty straightforward, I might have missed something. Please [file an issue](https://github.com/j9t/obsohtml/issues) or contact me directly if you spot a problem or have a suggestion.
+
+## Acknowledgments
+
+Thanks to @mattbrundage and @FabianBeiner for helping to make ObsoHTML better!
