@@ -42,16 +42,18 @@ async function findObsolete(filePath) {
 }
 
 // Function to walk through the project directory, excluding node_modules directories
-function walkDirectory(directory) {
+function walkDirectory(directory, verbose) {
+  const MAX_PATH_LENGTH = 255; // Adjust this value based on your OS limits
   let files;
+
   try {
     files = fs.readdirSync(directory);
   } catch (err) {
     if (err.code === 'EPERM' || err.code === 'EACCES') {
-      console.warn(`Skipping directory due to permissions: ${directory}`);
+      if (verbose) console.warn(`Skipping directory due to permissions: ${directory}`);
       return;
     } else if (err.code === 'ENOENT') {
-      console.warn(`Skipping non-existent directory: ${directory}`);
+      if (verbose) console.warn(`Skipping non-existent directory: ${directory}`);
       return;
     } else {
       throw err;
@@ -61,17 +63,27 @@ function walkDirectory(directory) {
   files.forEach(file => {
     const fullPath = path.join(directory, file);
 
+    if (fullPath.length > MAX_PATH_LENGTH) {
+      if (verbose) console.warn(`Skipping file or directory with path too long: ${fullPath}`);
+      return;
+    }
+
     try {
+      const stats = fs.lstatSync(fullPath);
+      if (stats.isSymbolicLink()) {
+        if (verbose) console.warn(`Skipping symbolic link: ${fullPath}`);
+        return;
+      }
       if (fs.statSync(fullPath).isDirectory()) {
         if (file !== 'node_modules') {
-          walkDirectory(fullPath);
+          walkDirectory(fullPath, verbose);
         }
       } else if (fullPath.endsWith('.html') || fullPath.endsWith('.htm') || fullPath.endsWith('.php') || fullPath.endsWith('.js') || fullPath.endsWith('.ts')) {
         findObsolete(fullPath);
       }
     } catch (err) {
       if (err.code === 'ENOENT') {
-        console.warn(`Skipping non-existent file or directory: ${fullPath}`);
+        if (verbose) console.warn(`Skipping non-existent file or directory: ${fullPath}`);
       } else {
         throw err;
       }
@@ -80,16 +92,18 @@ function walkDirectory(directory) {
 }
 
 // Main function to execute the script
-async function main(projectDirectory = defaultProjectDirectory) {
-  await walkDirectory(projectDirectory);
+async function main(projectDirectory = defaultProjectDirectory, verbose = false) {
+  await walkDirectory(projectDirectory, verbose);
 }
 
 // Define command line options
 program
   .option('-f, --folder <path>', 'specify the project directory', defaultProjectDirectory)
+  .option('-v, --verbose', 'enable verbose output')
   .parse(process.argv);
 
-// Get the project directory from command line arguments or use the default
+// Get the project directory and verbose flag from command line arguments or use the default
 const options = program.opts();
 const projectDirectory = options.folder;
-main(projectDirectory);
+const verbose = options.verbose;
+main(projectDirectory, verbose);

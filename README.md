@@ -18,6 +18,8 @@ npm i @j9t/obsohtml
 
 The script accepts a folder path as a command line option, which can be specified in both short form (`-f`) and long form (`--folder`). The folder path can be either absolute or relative.
 
+The script can be run in “verbose” mode by appending `-v` or `--verbose` to the command. This will show information about files and directories that were skipped.
+
 ##### Example Commands
 
 Use the default directory (user home directory):
@@ -46,7 +48,7 @@ Download or fork [the source repository](https://github.com/j9t/obsohtml).
 
 #### Execution
 
-The script accepts a folder path as a command line option, which can be specified in both short form (`-f`) and long form (`--folder`). The folder path can be either absolute or relative.
+As mentioned above, the script accepts a folder (`-f`, `--folder`) and can be run in “verbose” mode (`-v`, `--verbose`).
 
 ##### Example Commands
 
