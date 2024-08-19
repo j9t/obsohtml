@@ -82,4 +82,4 @@ This started as an experiment, in which I used AI to produce this little HTML qu
 
 ## Acknowledgments
 
-Thanks to @mattbrundage and @FabianBeiner for helping to make ObsoHTML better!
+Thanks to @mattbrundage, @FabianBeiner, and @AndrewMac for helping to make ObsoHTML better!
