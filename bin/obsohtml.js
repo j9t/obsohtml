@@ -78,7 +78,7 @@ function walkDirectory(directory, verbose) {
         if (file !== 'node_modules') {
           walkDirectory(fullPath, verbose);
         }
-      } else if (fullPath.endsWith('.html') || fullPath.endsWith('.htm') || fullPath.endsWith('.php') || fullPath.endsWith('.js') || fullPath.endsWith('.ts')) {
+      } else if (fullPath.endsWith('.html') || fullPath.endsWith('.htm') || fullPath.endsWith('.php') || fullPath.endsWith('.njk') || fullPath.endsWith('.twig') || fullPath.endsWith('.js') || fullPath.endsWith('.ts')) {
         findObsolete(fullPath);
       }
     } catch (err) {
