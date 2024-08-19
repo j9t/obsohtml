@@ -7,6 +7,7 @@ describe('ObsoHTML', () => {
   const tempFile = path.join(tempDir, 'test.html');
   const tempFileWithAttributes = path.join(tempDir, 'test_with_attributes.html');
   const tempFileWithMinimizedAttributes = path.join(tempDir, 'test_with_minimized_attributes.html');
+  const tempTwigFile = path.join(tempDir, 'test.twig');
 
   beforeAll(() => {
     // Create a temporary directory and files
@@ -16,6 +17,7 @@ describe('ObsoHTML', () => {
     fs.writeFileSync(tempFile, '<!DOCTYPE html><html><title>Test</title><body><center>Test</center></body></html>');
     fs.writeFileSync(tempFileWithAttributes, '<!DOCTYPE html><html><title>Test</title><body><img src=test.jpg alt=Test align=left></body></html>');
     fs.writeFileSync(tempFileWithMinimizedAttributes, '<!DOCTYPE html><html><title>Test</title><hr noshade><!-- this is not a <table> with a nowrap attribute -->');
+    fs.writeFileSync(tempTwigFile, '<!DOCTYPE html><html><title>Test</title><isindex>');
   });
 
   afterAll(() => {
@@ -23,6 +25,7 @@ describe('ObsoHTML', () => {
     fs.unlinkSync(tempFile);
     fs.unlinkSync(tempFileWithAttributes);
     fs.unlinkSync(tempFileWithMinimizedAttributes);
+    fs.unlinkSync(tempTwigFile);
     fs.rmdirSync(tempDir);
   });
 
@@ -53,5 +56,10 @@ describe('ObsoHTML', () => {
   test('Detect obsolete minimized attributes', () => {
     const result = spawnSync('node', ['bin/obsohtml.js', '-f', tempDir], { encoding: 'utf-8' });
     expect(result.stdout).toContain("Found obsolete attribute 'noshade'");
+  });
+
+  test('Detect obsolete elements in Twig file', () => {
+    const result = spawnSync('node', ['bin/obsohtml.js', '-f', tempDir], { encoding: 'utf-8' });
+    expect(result.stdout).toContain("Found obsolete element 'isindex'");
   });
 });
