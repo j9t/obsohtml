@@ -56,6 +56,7 @@ describe('ObsoHTML', () => {
   test('Detect obsolete minimized attributes', () => {
     const result = spawnSync('node', ['bin/obsohtml.js', '-f', tempDir], { encoding: 'utf-8' });
     expect(result.stdout).toContain("Found obsolete attribute 'noshade'");
+    expect(result.stdout).not.toContain("Found obsolete attribute 'nowrap'");
   });
 
   test('Detect obsolete elements in Twig file', () => {
