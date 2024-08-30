@@ -84,4 +84,4 @@ This started as an experiment, in which I used AI to produce this little HTML qu
 
 ## Acknowledgments
 
-Thanks to @mattbrundage, @FabianBeiner, and @AndrewMac for helping to make ObsoHTML better!
+Thanks to [@mattbrundage](https://github.com/mattbrundage), [@FabianBeiner](https://github.com/FabianBeiner), and [@AndrewMac](https://github.com/AndrewMac) for helping to make ObsoHTML better!
