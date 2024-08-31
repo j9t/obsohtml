@@ -1,6 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const { spawnSync } = require('child_process');
+import fs from 'fs';
+import path from 'path';
+import { spawnSync } from 'child_process';
 
 describe('ObsoHTML', () => {
   const tempDir = path.join(__dirname, 'temp_test_dir');
@@ -30,37 +30,37 @@ describe('ObsoHTML', () => {
   });
 
   test('Detect obsolete elements', () => {
-    const result = spawnSync('node', ['bin/obsohtml.js', '-f', tempDir], { encoding: 'utf-8' });
+    const result = spawnSync('node', ['dist/obsohtml.js', '-f', tempDir], { encoding: 'utf-8' });
     expect(result.stdout).toContain("Found obsolete element 'center'");
   });
 
   test('Detect obsolete attributes', () => {
-    const result = spawnSync('node', ['bin/obsohtml.js', '-f', tempDir], { encoding: 'utf-8' });
+    const result = spawnSync('node', ['dist/obsohtml.js', '-f', tempDir], { encoding: 'utf-8' });
     expect(result.stdout).toContain("Found obsolete attribute 'align'");
   });
 
   test('Detect obsolete elements and attributes using absolute path', () => {
     const absolutePath = path.resolve(tempDir);
-    const result = spawnSync('node', ['bin/obsohtml.js', '-f', absolutePath], { encoding: 'utf-8' });
+    const result = spawnSync('node', ['dist/obsohtml.js', '-f', absolutePath], { encoding: 'utf-8' });
     expect(result.stdout).toContain("Found obsolete element 'center'");
     expect(result.stdout).toContain("Found obsolete attribute 'align'");
   });
 
   test('Detect obsolete elements and attributes using relative path', () => {
     const relativePath = path.relative(process.cwd(), tempDir);
-    const result = spawnSync('node', ['bin/obsohtml.js', '--folder', relativePath], { encoding: 'utf-8' });
+    const result = spawnSync('node', ['dist/obsohtml.js', '--folder', relativePath], { encoding: 'utf-8' });
     expect(result.stdout).toContain("Found obsolete element 'center'");
     expect(result.stdout).toContain("Found obsolete attribute 'align'");
   });
 
   test('Detect obsolete minimized attributes', () => {
-    const result = spawnSync('node', ['bin/obsohtml.js', '-f', tempDir], { encoding: 'utf-8' });
+    const result = spawnSync('node', ['dist/obsohtml.js', '-f', tempDir], { encoding: 'utf-8' });
     expect(result.stdout).toContain("Found obsolete attribute 'noshade'");
     expect(result.stdout).not.toContain("Found obsolete attribute 'nowrap'");
   });
 
   test('Detect obsolete elements in Twig file', () => {
-    const result = spawnSync('node', ['bin/obsohtml.js', '-f', tempDir], { encoding: 'utf-8' });
+    const result = spawnSync('node', ['dist/obsohtml.js', '-f', tempDir], { encoding: 'utf-8' });
     expect(result.stdout).toContain("Found obsolete element 'isindex'");
   });
 });

@@ -1,34 +1,36 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
-const { Command } = require('commander');
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
+import { Command } from 'commander';
+import { Chalk } from 'chalk';
+
 const program = new Command();
 
 // List of obsolete or proprietary HTML elements
-const obsoleteElements = [
+const obsoleteElements: string[] = [
   'acronym', 'applet', 'basefont', 'bgsound', 'big', 'blink', 'center', 'command', 'content', 'dir', 'element', 'font', 'frame', 'frameset', 'image', 'isindex', 'keygen', 'listing', 'marquee', 'menuitem', 'multicol', 'nextid', 'nobr', 'noembed', 'noframes', 'plaintext', 'shadow', 'spacer', 'strike', 'tt', 'xmp'
 ];
 
 // List of obsolete or proprietary HTML attributes
-const obsoleteAttributes = [
+const obsoleteAttributes: string[] = [
   'align', 'bgcolor', 'border', 'frameborder', 'marginwidth', 'marginheight', 'scrolling', 'valign', 'hspace', 'vspace', 'noshade', 'nowrap'
 ];
 
 // Default project directory (user’s home directory)
-const defaultProjectDirectory = os.homedir();
+const defaultProjectDirectory: string = os.homedir();
 
 // Function to find obsolete elements and attributes in a file
-async function findObsolete(filePath) {
-  const chalk = await import('chalk');
-  const content = fs.readFileSync(filePath, 'utf8');
+async function findObsolete(filePath: string): Promise<void> {
+  const chalk: typeof Chalk = await import('chalk');
+  const content: string = fs.readFileSync(filePath, 'utf8');
 
   // Check for obsolete elements
   obsoleteElements.forEach(element => {
     const elementRegex = new RegExp(`<\\s*${element}\\b`, 'i');
     if (elementRegex.test(content)) {
-      console.log(chalk.default.blue(`Found obsolete element ${chalk.default.bold(`'${element}'`)} in ${filePath}`));
+      console.log(chalk.blue(`Found obsolete element ${chalk.bold(`'${element}'`)} in ${filePath}`));
     }
   });
 
@@ -36,15 +38,15 @@ async function findObsolete(filePath) {
   obsoleteAttributes.forEach(attribute => {
     const attributeRegex = new RegExp(`<[^>]*\\s${attribute}\\b(\\s*=\\s*(?:"[^"]*"|'[^']*'|[^"'\\s>]+))?\\s*(?=/?>)`, 'i');
     if (attributeRegex.test(content)) {
-      console.log(chalk.default.green(`Found obsolete attribute ${chalk.default.bold(`'${attribute}'`)} in ${filePath}`));
+      console.log(chalk.green(`Found obsolete attribute ${chalk.bold(`'${attribute}'`)} in ${filePath}`));
     }
   });
 }
 
 // Function to walk through the project directory, excluding node_modules directories
-function walkDirectory(directory, verbose) {
+function walkDirectory(directory: string, verbose: boolean): void {
   const MAX_PATH_LENGTH = 255; // Adjust this value based on your OS limits
-  let files;
+  let files: string[];
 
   try {
     files = fs.readdirSync(directory);
@@ -92,7 +94,7 @@ function walkDirectory(directory, verbose) {
 }
 
 // Main function to execute the script
-async function main(projectDirectory = defaultProjectDirectory, verbose = false) {
+async function main(projectDirectory: string = defaultProjectDirectory, verbose: boolean = false): Promise<void> {
   await walkDirectory(projectDirectory, verbose);
 }
 
@@ -104,6 +106,6 @@ program
 
 // Get the project directory and verbose flag from command line arguments or use the default
 const options = program.opts();
-const projectDirectory = options.folder;
-const verbose = options.verbose;
+const projectDirectory: string = options.folder;
+const verbose: boolean = options.verbose;
 main(projectDirectory, verbose);
