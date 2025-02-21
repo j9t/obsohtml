@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
 const { Command } = require('commander');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
 const program = new Command();
+const { styleText } = require('node:util');
 
 // List of obsolete or proprietary HTML elements
 const obsoleteElements = [
@@ -21,14 +22,14 @@ const defaultProjectDirectory = os.homedir();
 
 // Function to find obsolete elements and attributes in a file
 async function findObsolete(filePath) {
-  const chalk = await import('chalk');
   const content = fs.readFileSync(filePath, 'utf8');
 
   // Check for obsolete elements
   obsoleteElements.forEach(element => {
     const elementRegex = new RegExp(`<\\s*${element}\\b`, 'i');
     if (elementRegex.test(content)) {
-      console.log(chalk.default.blue(`Found obsolete element ${chalk.default.bold(`'${element}'`)} in ${filePath}`));
+      const message = styleText('blue', `Found obsolete element ${styleText('bold', `'${element}'`)} in ${filePath}`);
+      console.log(message);
     }
   });
 
@@ -36,7 +37,8 @@ async function findObsolete(filePath) {
   obsoleteAttributes.forEach(attribute => {
     const attributeRegex = new RegExp(`<[^>]*\\s${attribute}\\b(\\s*=\\s*(?:"[^"]*"|'[^']*'|[^"'\\s>]+))?\\s*(?=/?>)`, 'i');
     if (attributeRegex.test(content)) {
-      console.log(chalk.default.green(`Found obsolete attribute ${chalk.default.bold(`'${attribute}'`)} in ${filePath}`));
+      const message = styleText('green', `Found obsolete attribute ${styleText('bold', `'${attribute}'`)} in ${filePath}`);
+      console.log(message);
     }
   });
 }

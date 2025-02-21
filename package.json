@@ -1,30 +1,29 @@
 {
-  "name": "@j9t/obsohtml",
-  "description": "Find obsolete HTML elements and attributes",
   "author": "Jens Oliver Meiert",
-  "version": "1.7.0",
-  "license": "CC-BY-SA-4.0",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/j9t/obsohtml.git"
+  "bin": {
+    "obsohtml": "bin/obsohtml.js"
+  },
+  "dependencies": {
+    "commander": "^13.0.0"
+  },
+  "description": "Find obsolete HTML elements and attributes",
+  "devDependencies": {
+    "jest": "^29.7.0"
   },
   "homepage": "https://github.com/j9t/obsohtml",
   "keywords": [
     "html",
     "qa"
   ],
-  "bin": {
-    "obsohtml": "bin/obsohtml.js"
+  "license": "CC-BY-SA-4.0",
+  "name": "@j9t/obsohtml",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/j9t/obsohtml.git"
   },
   "scripts": {
     "start": "node ./bin/obsohtml.js",
     "test": "jest"
   },
-  "dependencies": {
-    "chalk": "^5.4.1",
-    "commander": "^13.0.0"
-  },
-  "devDependencies": {
-    "jest": "^29.7.0"
-  }
+  "version": "1.8.0"
 }
