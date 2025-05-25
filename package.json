@@ -4,7 +4,7 @@
     "obsohtml": "bin/obsohtml.js"
   },
   "dependencies": {
-    "commander": "^13.0.0"
+    "commander": "^14.0.0"
   },
   "description": "Find obsolete HTML elements and attributes",
   "devDependencies": {
