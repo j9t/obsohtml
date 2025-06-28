@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
-const { Command } = require('commander');
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
+import { Command } from 'commander';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { styleText } from 'node:util';
+
 const program = new Command();
-const { styleText } = require('node:util');
 
 // List of obsolete or proprietary HTML elements
 const obsoleteElements = [

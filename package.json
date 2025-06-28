@@ -23,7 +23,8 @@
   },
   "scripts": {
     "start": "node ./bin/obsohtml.js",
-    "test": "jest"
+    "test": "node --experimental-vm-modules node_modules/.bin/jest"
   },
-  "version": "1.8.1"
+  "type": "module",
+  "version": "1.9.0"
 }
