@@ -77,7 +77,7 @@ function walkDirectory(directory, verbose) {
         if (verbose) console.warn(`Skipping symbolic link: ${fullPath}`);
         return;
       }
-      if (fs.statSync(fullPath).isDirectory()) {
+      if (stats.isDirectory()) {
         if (file !== 'node_modules') {
           walkDirectory(fullPath, verbose);
         }
