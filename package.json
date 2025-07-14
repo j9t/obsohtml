@@ -8,7 +8,7 @@
   },
   "description": "Find obsolete HTML elements and attributes",
   "devDependencies": {
-    "jest": "^30.0.0"
+    "jest": "^30.0.4"
   },
   "homepage": "https://github.com/j9t/obsohtml",
   "keywords": [
