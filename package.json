@@ -26,5 +26,5 @@
     "test": "node --experimental-vm-modules node_modules/.bin/jest"
   },
   "type": "module",
-  "version": "1.9.1"
+  "version": "1.9.2"
 }
