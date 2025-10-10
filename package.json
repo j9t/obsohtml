@@ -7,9 +7,6 @@
     "commander": "^14.0.0"
   },
   "description": "Find obsolete HTML elements and attributes",
-  "devDependencies": {
-    "jest": "^30.1.3"
-  },
   "homepage": "https://github.com/j9t/obsohtml",
   "keywords": [
     "html",
@@ -23,8 +20,8 @@
   },
   "scripts": {
     "start": "node ./bin/obsohtml.js",
-    "test": "node --experimental-vm-modules node_modules/.bin/jest"
+    "test": "node --test bin/obsohtml.test.js"
   },
   "type": "module",
-  "version": "1.9.2"
+  "version": "1.9.3"
 }
