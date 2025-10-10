@@ -6,6 +6,7 @@ import { describe, test, before, after } from 'node:test';
 import assert from 'node:assert';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const scriptPath = path.join(__dirname, 'obsohtml.js');
 
 // Strip ANSI escape codes from output
 // Using the same regex pattern as Node.js util.stripVTControlCharacters
@@ -42,14 +43,12 @@ describe('ObsoHTML', () => {
   });
 
   test('Detect obsolete elements', () => {
-    const scriptPath = path.join(__dirname, 'obsohtml.js');
     const result = spawnSync('node', [scriptPath, '-f', tempDir], { encoding: 'utf-8' });
     const output = stripAnsi(result.stdout);
     assert.ok(output.includes("Found obsolete element 'center'"));
   });
 
   test('Detect obsolete attributes', () => {
-    const scriptPath = path.join(__dirname, 'obsohtml.js');
     const result = spawnSync('node', [scriptPath, '-f', tempDir], { encoding: 'utf-8' });
     const output = stripAnsi(result.stdout);
     assert.ok(output.includes("Found obsolete attribute 'align'"));
@@ -57,7 +56,6 @@ describe('ObsoHTML', () => {
 
   test('Detect obsolete elements and attributes using absolute path', () => {
     const absolutePath = path.resolve(tempDir);
-    const scriptPath = path.join(__dirname, 'obsohtml.js');
     const result = spawnSync('node', [scriptPath, '-f', absolutePath], { encoding: 'utf-8' });
     const output = stripAnsi(result.stdout);
     assert.ok(output.includes("Found obsolete element 'center'"));
@@ -66,7 +64,6 @@ describe('ObsoHTML', () => {
 
   test('Detect obsolete elements and attributes using relative path', () => {
     const relativePath = path.relative(process.cwd(), tempDir);
-    const scriptPath = path.join(__dirname, 'obsohtml.js');
     const result = spawnSync('node', [scriptPath, '--folder', relativePath], { encoding: 'utf-8' });
     const output = stripAnsi(result.stdout);
     assert.ok(output.includes("Found obsolete element 'center'"));
@@ -74,7 +71,6 @@ describe('ObsoHTML', () => {
   });
 
   test('Detect obsolete minimized attributes', () => {
-    const scriptPath = path.join(__dirname, 'obsohtml.js');
     const result = spawnSync('node', [scriptPath, '-f', tempDir], { encoding: 'utf-8' });
     const output = stripAnsi(result.stdout);
     assert.ok(output.includes("Found obsolete attribute 'noshade'"));
@@ -82,7 +78,6 @@ describe('ObsoHTML', () => {
   });
 
   test('Detect obsolete elements in Twig file', () => {
-    const scriptPath = path.join(__dirname, 'obsohtml.js');
     const result = spawnSync('node', [scriptPath, '-f', tempDir], { encoding: 'utf-8' });
     const output = stripAnsi(result.stdout);
     assert.ok(output.includes("Found obsolete element 'isindex'"));
