@@ -1,6 +1,6 @@
 # ObsoHTML, the Obsolete HTML Checker
 
-[![npm version](https://img.shields.io/npm/v/@j9t/obsohtml.svg)](https://www.npmjs.com/package/@j9t/obsohtml) [![Build status](https://github.com/j9t/obsohtml/workflows/Tests/badge.svg)](https://github.com/j9t/obsohtml/actions)
+[![npm version](https://img.shields.io/npm/v/@j9t/obsohtml.svg)](https://www.npmjs.com/package/@j9t/obsohtml) [![Build status](https://github.com/j9t/obsohtml/workflows/Tests/badge.svg)](https://github.com/j9t/obsohtml/actions) [![Socket](https://badge.socket.dev/npm/package/@j9t/obsohtml)](https://socket.dev/npm/package/@j9t/obsohtml)
 
 ObsoHTML is a Node.js script designed to scan HTML, PHP, Nunjucks, Twig, JavaScript, and TypeScript files for obsolete or proprietary HTML attributes and elements (in scripts, it would catch JSX syntax). It helps you identify and update deprecated HTML code to be more sure to use web standards.
 
