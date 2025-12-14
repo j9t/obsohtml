@@ -12,8 +12,8 @@
     "html",
     "qa",
     "qc",
-		"semantics"
-	],
+    "semantics"
+  ],
   "license": "CC-BY-SA-4.0",
   "name": "@j9t/obsohtml",
   "repository": {
@@ -25,5 +25,5 @@
     "test": "node --test bin/obsohtml.test.js"
   },
   "type": "module",
-  "version": "1.9.4"
+  "version": "1.9.5"
 }
