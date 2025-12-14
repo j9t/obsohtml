@@ -12,8 +12,8 @@
     "html",
     "qa",
     "qc",
-		"semantics"
-	],
+    "semantics"
+  ],
   "license": "CC-BY-SA-4.0",
   "name": "@j9t/obsohtml",
   "repository": {
