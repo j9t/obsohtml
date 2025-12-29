@@ -7,6 +7,7 @@
     "commander": "^14.0.0"
   },
   "description": "Find obsolete HTML elements and attributes",
+  "funding": "https://buymeacoffee.com/meiert",
   "homepage": "https://github.com/j9t/obsohtml",
   "keywords": [
     "html",
@@ -18,7 +19,7 @@
   "name": "@j9t/obsohtml",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/j9t/obsohtml.git"
+    "url": "git+https://github.com/j9t/obsohtml.git"
   },
   "scripts": {
     "start": "node ./bin/obsohtml.js",
