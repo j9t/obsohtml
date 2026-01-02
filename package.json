@@ -7,7 +7,7 @@
     "commander": "^14.0.0"
   },
   "description": "Find obsolete HTML elements and attributes",
-  "funding": "https://buymeacoffee.com/meiert",
+  "funding": "https://github.com/j9t/obsohtml?sponsor=1",
   "homepage": "https://github.com/j9t/obsohtml",
   "keywords": [
     "html",
