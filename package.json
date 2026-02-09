@@ -6,7 +6,7 @@
   "dependencies": {
     "commander": "^14.0.0"
   },
-  "description": "Find obsolete HTML elements and attributes",
+  "description": "Find obsolete HTML elements and attributes.",
   "funding": "https://github.com/j9t/obsohtml?sponsor=1",
   "homepage": "https://github.com/j9t/obsohtml",
   "keywords": [
