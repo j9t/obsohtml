@@ -16,7 +16,7 @@
     "semantics"
   ],
   "license": "CC-BY-SA-4.0",
-  "name": "@j9t/obsohtml",
+  "name": "obsohtml",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/j9t/obsohtml.git"
