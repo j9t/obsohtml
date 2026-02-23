@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/obsohtml.svg)](https://www.npmjs.com/package/obsohtml) [![Build status](https://github.com/j9t/obsohtml/workflows/Tests/badge.svg)](https://github.com/j9t/obsohtml/actions) [![Socket](https://badge.socket.dev/npm/package/obsohtml)](https://socket.dev/npm/package/obsohtml)
 
-ObsoHTML is a Node.js script designed to scan HTML, PHP, Nunjucks, Twig, JavaScript, and TypeScript files for obsolete or proprietary HTML attributes and elements (in scripts, it would catch JSX syntax). It helps you identify and update deprecated HTML code to be more sure to use web standards.
+ObsoHTML is a Node.js script designed to scan HTML, PHP, Nunjucks, Twig, JavaScript, and TypeScript files for obsolete or proprietary HTML attributes and elements. It helps you identify and update deprecated HTML code to be more sure to use web standards.
 
 ObsoHTML has inherent limitations and may not find all obsolete attributes and elements. If you run into a problem, please [file an issue](https://github.com/j9t/obsohtml/issues).
 
@@ -20,7 +20,7 @@ npm i obsohtml
 
 #### Execution
 
-The script accepts a folder path as a command line option, which can be specified in both short form (`-f`) and long form (`--folder`). The folder path can be either absolute or relative.
+The script accepts a folder or file path as a command line option, which can be specified in both short form (`-f`) and long form (`--folder`). The path can be either absolute or relative.
 
 The script can be run in “verbose” mode by appending `-v` or `--verbose` to the command. This will show information about files and directories that were skipped.
 
@@ -79,6 +79,8 @@ node bin/obsohtml.js -f ../path/to/folder
 ## Output
 
 The script will output messages to the console indicating any obsolete attributes or elements found in the scanned files, along with the file paths where they were detected.
+
+The script exits with code `1` if any obsolete HTML is found, and `0` if none is found, making it suitable for use in CI pipelines.
 
 ## Background
 

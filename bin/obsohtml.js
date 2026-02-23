@@ -18,35 +18,54 @@ const obsoleteAttributes = [
   'align', 'background', 'bgcolor', 'border', 'frameborder', 'hspace', 'marginheight', 'marginwidth', 'noshade', 'nowrap', 'scrolling', 'valign', 'vspace'
 ];
 
+// Pre-compile regexes once at startup
+const elementRegexes = obsoleteElements.map(element => ({
+  element,
+  regex: new RegExp(`<\\s*${element}\\b`, 'i'),
+}));
+
+const attributeRegexes = obsoleteAttributes.map(attribute => ({
+  attribute,
+  // Matches the attribute preceded by whitespace anywhere in a tag, without
+  // requiring it to be the last attribute before the closing bracket.
+  regex: new RegExp(`<[^>]*\\s${attribute}\\b(\\s*=\\s*(?:"[^"]*"|'[^']*'|[^"'\\s>]+))?`, 'i'),
+}));
+
+// Directories to skip during traversal
+const EXCLUDED_DIRS = new Set(['node_modules', '.git', 'dist', 'build', 'vendor']);
+
 // Default project directory (user’s home directory)
 const defaultProjectDirectory = os.homedir();
 
+// Track whether any obsolete HTML was found
+let foundObsolete = false;
+
 // Function to find obsolete elements and attributes in a file
-async function findObsolete(filePath) {
+function findObsolete(filePath) {
   const content = fs.readFileSync(filePath, 'utf8');
 
   // Check for obsolete elements
-  obsoleteElements.forEach(element => {
-    const elementRegex = new RegExp(`<\\s*${element}\\b`, 'i');
-    if (elementRegex.test(content)) {
+  for (const { element, regex } of elementRegexes) {
+    if (regex.test(content)) {
+      foundObsolete = true;
       const message = styleText('blue', `Found obsolete element ${styleText('bold', `'${element}'`)} in ${filePath}`);
       console.log(message);
     }
-  });
+  }
 
   // Check for obsolete attributes
-  obsoleteAttributes.forEach(attribute => {
-    const attributeRegex = new RegExp(`<[^>]*\\s${attribute}\\b(\\s*=\\s*(?:"[^"]*"|'[^']*'|[^"'\\s>]+))?\\s*(?=/?>)`, 'i');
-    if (attributeRegex.test(content)) {
+  for (const { attribute, regex } of attributeRegexes) {
+    if (regex.test(content)) {
+      foundObsolete = true;
       const message = styleText('green', `Found obsolete attribute ${styleText('bold', `'${attribute}'`)} in ${filePath}`);
       console.log(message);
     }
-  });
+  }
 }
 
-// Function to walk through the project directory, excluding node_modules directories
+// Function to walk through the project directory, excluding common build/VCS directories
 function walkDirectory(directory, verbose) {
-  const MAX_PATH_LENGTH = 255; // Adjust this value based on your OS limits
+  const MAX_PATH_LENGTH = 255;
   let files;
 
   try {
@@ -63,25 +82,31 @@ function walkDirectory(directory, verbose) {
     }
   }
 
-  files.forEach(file => {
+  for (const file of files) {
     const fullPath = path.join(directory, file);
 
     if (fullPath.length > MAX_PATH_LENGTH) {
       if (verbose) console.warn(`Skipping file or directory with path too long: ${fullPath}`);
-      return;
+      continue;
     }
 
     try {
       const stats = fs.lstatSync(fullPath);
       if (stats.isSymbolicLink()) {
         if (verbose) console.warn(`Skipping symbolic link: ${fullPath}`);
-        return;
+        continue;
       }
       if (stats.isDirectory()) {
-        if (file !== 'node_modules') {
+        if (!EXCLUDED_DIRS.has(file)) {
           walkDirectory(fullPath, verbose);
         }
-      } else if (fullPath.endsWith('.html') || fullPath.endsWith('.htm') || fullPath.endsWith('.php') || fullPath.endsWith('.njk') || fullPath.endsWith('.twig') || fullPath.endsWith('.js') || fullPath.endsWith('.ts')) {
+      } else if (
+        fullPath.endsWith('.html') || fullPath.endsWith('.htm') ||
+        fullPath.endsWith('.php') ||
+        fullPath.endsWith('.njk') || fullPath.endsWith('.twig') ||
+        fullPath.endsWith('.js') || fullPath.endsWith('.jsx') ||
+        fullPath.endsWith('.ts') || fullPath.endsWith('.tsx')
+      ) {
         findObsolete(fullPath);
       }
     } catch (err) {
@@ -91,12 +116,25 @@ function walkDirectory(directory, verbose) {
         throw err;
       }
     }
-  });
+  }
 }
 
 // Main function to execute the script
-async function main(projectDirectory = defaultProjectDirectory, verbose = false) {
-  await walkDirectory(projectDirectory, verbose);
+function main(projectDirectory = defaultProjectDirectory, verbose = false) {
+  let stats;
+  try {
+    stats = fs.lstatSync(projectDirectory);
+  } catch (err) {
+    if (err.code !== 'ENOENT') throw err;
+  }
+
+  if (stats?.isFile()) {
+    findObsolete(projectDirectory);
+  } else {
+    walkDirectory(projectDirectory, verbose);
+  }
+
+  if (foundObsolete) process.exit(1);
 }
 
 // Define command line options
