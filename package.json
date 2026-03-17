@@ -6,7 +6,7 @@
   "dependencies": {
     "commander": "^14.0.0"
   },
-  "description": "Obsolete and proprietary HTML finder",
+  "description": "HTML checker for obsolete and proprietary elements and attributes",
   "funding": "https://github.com/j9t/obsohtml?sponsor=1",
   "homepage": "https://github.com/j9t/obsohtml",
   "keywords": [
@@ -33,5 +33,5 @@
     "test": "node --test bin/obsohtml.test.js"
   },
   "type": "module",
-  "version": "1.9.8"
+  "version": "1.9.9"
 }

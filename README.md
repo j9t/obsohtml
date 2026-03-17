@@ -2,9 +2,9 @@
 
 [![npm version](https://img.shields.io/npm/v/obsohtml.svg)](https://www.npmjs.com/package/obsohtml) [![Build status](https://github.com/j9t/obsohtml/workflows/Tests/badge.svg)](https://github.com/j9t/obsohtml/actions) [![Socket](https://badge.socket.dev/npm/package/obsohtml)](https://socket.dev/npm/package/obsohtml)
 
-ObsoHTML is a Node.js script designed to scan HTML, PHP, Nunjucks, Twig, JavaScript, and TypeScript files for obsolete or proprietary HTML attributes and elements. It helps you identify and update deprecated HTML code to be more sure to use web standards.
+ObsoHTML is a Node.js script designed to scan HTML, PHP, Nunjucks, Twig, JavaScript, and TypeScript files for obsolete and proprietary HTML elements and attributes. It helps you identify and update deprecated HTML code to be sure to use web standards.
 
-ObsoHTML has inherent limitations and may not find all obsolete attributes and elements. If you run into a problem, please [file an issue](https://github.com/j9t/obsohtml/issues).
+ObsoHTML has inherent limitations and may not find all obsolete elements and attributes. If you run into a problem, please [file an issue](https://github.com/j9t/obsohtml/issues).
 
 ## Usage
 
@@ -78,7 +78,7 @@ node bin/obsohtml.js -f ../path/to/folder
 
 ## Output
 
-The script will output messages to the console indicating any obsolete attributes or elements found in the scanned files, along with the file paths where they were detected.
+The script will output messages to the console indicating any obsolete elements or attributes found in the scanned files, along with the file paths where they were detected.
 
 The script exits with code `1` if any obsolete HTML is found, and `0` if none is found, making it suitable for use in CI pipelines.
 
