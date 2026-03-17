@@ -21,10 +21,17 @@
     "type": "git",
     "url": "git+https://github.com/j9t/obsohtml.git"
   },
+  "devDependencies": {
+    "@eslint/js": "^10.0.0",
+    "eslint": "^10.0.0",
+    "globals": "^17.0.0"
+  },
   "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "start": "node ./bin/obsohtml.js",
     "test": "node --test bin/obsohtml.test.js"
   },
   "type": "module",
-  "version": "1.9.7"
+  "version": "1.9.8"
 }
