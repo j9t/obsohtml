@@ -23,7 +23,7 @@ const attributeRegexes = new Map(
 );
 
 /**
- * Check an HTML string for obsolete or proprietary elements and attributes.
+ * Check an HTML string for obsolete and proprietary elements and attributes.
  *
  * @param {string} html
  * @returns {{ elements: string[], attributes: string[] }}

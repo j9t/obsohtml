@@ -60,7 +60,7 @@ const { elements, attributes } = checkMarkup('<center>Hello</center>');
 
 #### `checkMarkup(html)`
 
-Checks an HTML string for obsolete or proprietary elements and attributes.
+Checks an HTML string for obsolete and proprietary elements and attributes.
 
 * **Parameter**: `html` (string)—the HTML content to check
 * **Returns**: `{ elements: string[], attributes: string[] }`—arrays of found obsolete element and attribute names
