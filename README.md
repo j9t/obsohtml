@@ -18,6 +18,8 @@ npm i obsohtml
 
 (To install ObsoHTML globally, use the `-g` flag, as in `npm i -g obsohtml`.)
 
+To use ObsoHTML without installing, run it via `npx obsohtml`. To use it as a standalone script, [download or fork the source repository](https://github.com/j9t/obsohtml) and run `node bin/obsohtml.js` directly—the same options apply.
+
 #### Execution
 
 ObsoHTML accepts a folder or file path as a command line option, which can be specified in both short form (`-f`) and long form (`--folder`). The path can be either absolute or relative.
@@ -44,39 +46,7 @@ Specify a folder using a relative path:
 npx obsohtml -f ../path/to/folder
 ```
 
-### 2. As a Standalone Script
-
-#### Installation
-
-Download or fork [the source repository](https://github.com/j9t/obsohtml).
-
-#### Execution
-
-As mentioned above, ObsoHTML accepts a folder (`-f`, `--folder`) and can be run in “verbose” mode (`-v`, `--verbose`).
-
-##### Example Commands
-
-(All commands as run from the root directory of the downloaded repository.)
-
-Use the default directory (user home directory):
-
-```console
-node bin/obsohtml.js
-```
-
-Specify a folder using an absolute path (easiest and most common use case):
-
-```console
-node bin/obsohtml.js -f /path/to/folder
-```
-
-Specify a folder using a relative path:
-
-```console
-node bin/obsohtml.js -f ../path/to/folder
-```
-
-### 3. Programmatic API
+### 2. Programmatic API
 
 ObsoHTML can be imported as a module to check HTML strings in your own tooling:
 
