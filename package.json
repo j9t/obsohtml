@@ -7,8 +7,17 @@
     "commander": "^14.0.0"
   },
   "description": "HTML checker for obsolete and proprietary elements and attributes",
+  "devDependencies": {
+    "@eslint/js": "^10.0.0",
+    "eslint": "^10.1.0",
+    "globals": "^17.0.0",
+    "typescript": "^6.0.2"
+  },
   "exports": {
-    ".": "./src/index.js"
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    }
   },
   "funding": "https://github.com/j9t/obsohtml?sponsor=1",
   "homepage": "https://github.com/j9t/obsohtml",
@@ -25,17 +34,14 @@
     "type": "git",
     "url": "git+https://github.com/j9t/obsohtml.git"
   },
-  "devDependencies": {
-    "@eslint/js": "^10.0.0",
-    "eslint": "^10.1.0",
-    "globals": "^17.0.0"
-  },
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "start": "node ./bin/obsohtml.js",
-    "test": "node --test bin/obsohtml.test.js"
+    "test": "npm run test:types && node --test bin/obsohtml.test.js",
+    "test:types": "tsc"
   },
   "type": "module",
+  "types": "src/index.d.ts",
   "version": "1.10.0"
 }

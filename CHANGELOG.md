@@ -9,3 +9,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 
 - Added programmatic API: `checkMarkup(html)` returns `{ elements, attributes }` arrays for use in other tools; `obsoleteElements` and `obsoleteAttributes` are now exported directly
+- Added TypeScript declaration file (`src/index.d.ts`)
