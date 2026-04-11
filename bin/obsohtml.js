@@ -5,31 +5,9 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { styleText } from 'node:util';
+import { checkString } from '../src/index.js';
 
 const program = new Command();
-
-// List of obsolete or proprietary HTML elements
-const obsoleteElements = [
-  'acronym', 'applet', 'basefont', 'bgsound', 'big', 'blink', 'center', 'command', 'content', 'dir', 'element', 'font', 'frame', 'frameset', 'image', 'isindex', 'keygen', 'listing', 'marquee', 'menuitem', 'multicol', 'nextid', 'nobr', 'noembed', 'noframes', 'param', 'plaintext', 'rb', 'rtc', 'shadow', 'spacer', 'strike', 'tt', 'xmp'
-];
-
-// List of obsolete or proprietary HTML attributes
-const obsoleteAttributes = [
-  'align', 'background', 'bgcolor', 'border', 'frameborder', 'hspace', 'marginheight', 'marginwidth', 'noshade', 'nowrap', 'scrolling', 'valign', 'vspace'
-];
-
-// Pre-compile regexes once at startup
-const elementRegexes = obsoleteElements.map(element => ({
-  element,
-  regex: new RegExp(`<\\s*${element}\\b`, 'i'),
-}));
-
-const attributeRegexes = obsoleteAttributes.map(attribute => ({
-  attribute,
-  // Matches the attribute preceded by whitespace anywhere in a tag, without
-  // requiring it to be the last attribute before the closing bracket.
-  regex: new RegExp(`<[^>]*\\s${attribute}\\b(\\s*=\\s*(?:"[^"]*"|'[^']*'|[^"'\\s>]+))?`, 'i'),
-}));
 
 // Directories to skip during traversal
 const EXCLUDED_DIRS = new Set(['node_modules', '.git', 'dist', 'build', 'vendor']);
@@ -42,24 +20,16 @@ let foundObsolete = false;
 
 // Function to find obsolete elements and attributes in a file
 function findObsolete(filePath) {
-  const content = fs.readFileSync(filePath, 'utf8');
+  const { elements, attributes } = checkString(fs.readFileSync(filePath, 'utf8'));
 
-  // Check for obsolete elements
-  for (const { element, regex } of elementRegexes) {
-    if (regex.test(content)) {
-      foundObsolete = true;
-      const message = styleText('blue', `Found obsolete element ${styleText('bold', `'${element}'`)} in ${filePath}`);
-      console.log(message);
-    }
+  for (const element of elements) {
+    foundObsolete = true;
+    console.log(styleText('blue', `Found obsolete element ${styleText('bold', `'${element}'`)} in ${filePath}`));
   }
 
-  // Check for obsolete attributes
-  for (const { attribute, regex } of attributeRegexes) {
-    if (regex.test(content)) {
-      foundObsolete = true;
-      const message = styleText('green', `Found obsolete attribute ${styleText('bold', `'${attribute}'`)} in ${filePath}`);
-      console.log(message);
-    }
+  for (const attribute of attributes) {
+    foundObsolete = true;
+    console.log(styleText('green', `Found obsolete attribute ${styleText('bold', `'${attribute}'`)} in ${filePath}`));
   }
 }
 
