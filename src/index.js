@@ -1,12 +1,12 @@
 // Obsolete or proprietary HTML elements
-export const obsoleteElements = [
+export const obsoleteElements = Object.freeze([
   'acronym', 'applet', 'basefont', 'bgsound', 'big', 'blink', 'center', 'command', 'content', 'dir', 'element', 'font', 'frame', 'frameset', 'image', 'isindex', 'keygen', 'listing', 'marquee', 'menuitem', 'multicol', 'nextid', 'nobr', 'noembed', 'noframes', 'param', 'plaintext', 'rb', 'rtc', 'shadow', 'spacer', 'strike', 'tt', 'xmp'
-];
+]);
 
 // Obsolete or proprietary HTML attributes
-export const obsoleteAttributes = [
+export const obsoleteAttributes = Object.freeze([
   'align', 'background', 'bgcolor', 'border', 'frameborder', 'hspace', 'marginheight', 'marginwidth', 'noshade', 'nowrap', 'scrolling', 'valign', 'vspace'
-];
+]);
 
 // Pre-compiled regexes for performance
 const elementRegexes = new Map(
@@ -29,6 +29,8 @@ const attributeRegexes = new Map(
  * @returns {{ elements: string[], attributes: string[] }}
  */
 export function checkMarkup(html) {
+  if (typeof html !== 'string') throw new TypeError('`html` must be a string');
+
   const elements = [];
   const attributes = [];
 
