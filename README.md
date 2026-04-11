@@ -2,13 +2,13 @@
 
 [![npm version](https://img.shields.io/npm/v/obsohtml.svg)](https://www.npmjs.com/package/obsohtml) [![Build status](https://github.com/j9t/obsohtml/workflows/Tests/badge.svg)](https://github.com/j9t/obsohtml/actions) [![Socket](https://badge.socket.dev/npm/package/obsohtml)](https://socket.dev/npm/package/obsohtml)
 
-ObsoHTML is a Node.js script designed to scan HTML, PHP, Nunjucks, Twig, JavaScript, and TypeScript files for obsolete and proprietary HTML elements and attributes. It helps you identify and update deprecated HTML code to be sure to use web standards.
+ObsoHTML is a Node.js tool designed to scan HTML, PHP, Nunjucks, Twig, JavaScript, and TypeScript files for obsolete and proprietary HTML elements and attributes. It helps you identify and update deprecated HTML code to be sure to use web standards.
 
 ObsoHTML has inherent limitations and may not find all obsolete elements and attributes. If you run into a problem, please [file an issue](https://github.com/j9t/obsohtml/issues).
 
 ## Usage
 
-### 1. As a Node Module
+### 1. Via CLI
 
 #### Installation
 
@@ -18,11 +18,13 @@ npm i obsohtml
 
 (To install ObsoHTML globally, use the `-g` flag, as in `npm i -g obsohtml`.)
 
+To use ObsoHTML without installing, run it via `npx obsohtml`. To use it as a standalone script, [download or fork the source repository](https://github.com/j9t/obsohtml) and run `node bin/obsohtml.js` directly—the same options apply.
+
 #### Execution
 
-The script accepts a folder or file path as a command line option, which can be specified in both short form (`-f`) and long form (`--folder`). The path can be either absolute or relative.
+ObsoHTML accepts a folder or file path as a command line option, which can be specified in both short form (`-f`) and long form (`--folder`). The path can be either absolute or relative.
 
-The script can be run in “verbose” mode by appending `-v` or `--verbose` to the command. This will show information about files and directories that were skipped.
+ObsoHTML can be run in “verbose” mode by appending `-v` or `--verbose` to the command. This will show information about files and directories that were skipped.
 
 ##### Example Commands
 
@@ -44,37 +46,32 @@ Specify a folder using a relative path:
 npx obsohtml -f ../path/to/folder
 ```
 
-### 2. As a Standalone Script
+### 2. Programmatic API
 
-#### Installation
+ObsoHTML can be imported as a module to check HTML strings in your own tooling:
 
-Download or fork [the source repository](https://github.com/j9t/obsohtml).
+```js
+import { checkMarkup, obsoleteElements, obsoleteAttributes } from 'obsohtml';
 
-#### Execution
-
-As mentioned above, the script accepts a folder (`-f`, `--folder`) and can be run in “verbose” mode (`-v`, `--verbose`).
-
-##### Example Commands
-
-(All commands as run from the root directory of the downloaded repository.)
-
-Use the default directory (user home directory):
-
-```console
-node bin/obsohtml.js
+const { elements, attributes } = checkMarkup('<center>Hello</center>');
+// elements: ['center']
+// attributes: []
 ```
 
-Specify a folder using an absolute path (easiest and most common use case):
+#### `checkMarkup(html)`
 
-```console
-node bin/obsohtml.js -f /path/to/folder
-```
+Checks an HTML string for obsolete or proprietary elements and attributes.
 
-Specify a folder using a relative path:
+* **Parameter**: `html` (string)—the HTML content to check
+* **Returns**: `{ elements: string[], attributes: string[] }`—arrays of found obsolete element and attribute names
 
-```console
-node bin/obsohtml.js -f ../path/to/folder
-```
+#### `obsoleteElements`
+
+Array of obsolete or proprietary HTML element names checked by ObsoHTML.
+
+#### `obsoleteAttributes`
+
+Array of obsolete or proprietary HTML attribute names checked by ObsoHTML.
 
 ## Output
 
