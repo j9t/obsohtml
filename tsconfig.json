@@ -1,5 +1,7 @@
 {
-  "include": ["src/index.test.ts"],
+  "include": [
+    "src/index.test.ts"
+  ],
   "compilerOptions": {
     "module": "nodenext",
     "target": "esnext",
@@ -11,3 +13,4 @@
     "moduleDetection": "force",
     "forceConsistentCasingInFileNames": true
   }
+}
