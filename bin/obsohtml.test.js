@@ -150,6 +150,11 @@ describe('`checkMarkup`', () => {
     assert.deepEqual(result, { elements: [], attributes: [] });
   });
 
+  test('Throw a TypeError for non-string input', () => {
+    assert.throws(() => checkMarkup(null), TypeError);
+    assert.throws(() => checkMarkup(42), TypeError);
+  });
+
   test('Detect an obsolete element', () => {
     const { elements, attributes } = checkMarkup('<center>Hello</center>');
     assert.ok(elements.includes('center'));
