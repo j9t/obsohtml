@@ -3,7 +3,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { describe, test, before, after } from 'node:test';
-import assert from 'node:assert/strict';
+import assert from 'node:assert';
 import { stripVTControlCharacters } from 'node:util';
 import { checkMarkup, obsoleteElements, obsoleteAttributes } from '../src/index.js';
 
