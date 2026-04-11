@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { styleText } from 'node:util';
-import { checkString } from '../src/index.js';
+import { checkMarkup } from '../src/index.js';
 
 const program = new Command();
 
@@ -20,7 +20,7 @@ let foundObsolete = false;
 
 // Function to find obsolete elements and attributes in a file
 function findObsolete(filePath) {
-  const { elements, attributes } = checkString(fs.readFileSync(filePath, 'utf8'));
+  const { elements, attributes } = checkMarkup(fs.readFileSync(filePath, 'utf8'));
 
   for (const element of elements) {
     foundObsolete = true;

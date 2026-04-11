@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { stripVTControlCharacters } from 'node:util';
-import { checkString, obsoleteElements, obsoleteAttributes } from '../src/index.js';
+import { checkMarkup, obsoleteElements, obsoleteAttributes } from '../src/index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const scriptPath = path.join(__dirname, 'obsohtml.js');
@@ -139,55 +139,55 @@ describe('`obsoleteAttributes`', () => {
   });
 });
 
-describe('`checkString`', () => {
+describe('`checkMarkup`', () => {
   test('Return empty arrays for clean HTML', () => {
-    const result = checkString('<p>Hello <strong>world</strong></p>');
+    const result = checkMarkup('<p>Hello <strong>world</strong></p>');
     assert.deepEqual(result, { elements: [], attributes: [] });
   });
 
   test('Return empty arrays for an empty string', () => {
-    const result = checkString('');
+    const result = checkMarkup('');
     assert.deepEqual(result, { elements: [], attributes: [] });
   });
 
   test('Detect an obsolete element', () => {
-    const { elements, attributes } = checkString('<center>Hello</center>');
+    const { elements, attributes } = checkMarkup('<center>Hello</center>');
     assert.ok(elements.includes('center'));
     assert.deepEqual(attributes, []);
   });
 
   test('Detect an obsolete attribute', () => {
-    const { elements, attributes } = checkString('<img src="x.jpg" align="left">');
+    const { elements, attributes } = checkMarkup('<img src="x.jpg" align="left">');
     assert.deepEqual(elements, []);
     assert.ok(attributes.includes('align'));
   });
 
   test('Detect multiple obsolete elements in one string', () => {
-    const { elements } = checkString('<marquee><blink>Hello</blink></marquee>');
+    const { elements } = checkMarkup('<marquee><blink>Hello</blink></marquee>');
     assert.ok(elements.includes('marquee'));
     assert.ok(elements.includes('blink'));
   });
 
   test('Detect multiple obsolete attributes in one string', () => {
-    const { attributes } = checkString('<table border="1" bgcolor="#fff"><tr valign="top"></tr></table>');
+    const { attributes } = checkMarkup('<table border="1" bgcolor="#fff"><tr valign="top"></tr></table>');
     assert.ok(attributes.includes('border'));
     assert.ok(attributes.includes('bgcolor'));
     assert.ok(attributes.includes('valign'));
   });
 
   test('Detect both obsolete elements and attributes in one string', () => {
-    const { elements, attributes } = checkString('<center><img align="left"></center>');
+    const { elements, attributes } = checkMarkup('<center><img align="left"></center>');
     assert.ok(elements.includes('center'));
     assert.ok(attributes.includes('align'));
   });
 
   test('Detect obsolete elements case-insensitively', () => {
-    const { elements } = checkString('<CENTER>Hello</CENTER>');
+    const { elements } = checkMarkup('<CENTER>Hello</CENTER>');
     assert.ok(elements.includes('center'));
   });
 
   test('Do not detect partial tag name matches', () => {
-    const { elements } = checkString('<centers>Hello</centers>');
+    const { elements } = checkMarkup('<centers>Hello</centers>');
     assert.deepEqual(elements, []);
   });
 });

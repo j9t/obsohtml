@@ -28,7 +28,7 @@ const attributeRegexes = new Map(
  * @param {string} html
  * @returns {{ elements: string[], attributes: string[] }}
  */
-export function checkString(html) {
+export function checkMarkup(html) {
   const elements = [];
   const attributes = [];
 
