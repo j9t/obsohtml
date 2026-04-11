@@ -7,6 +7,9 @@
     "commander": "^14.0.0"
   },
   "description": "HTML checker for obsolete and proprietary elements and attributes",
+  "exports": {
+    ".": "./src/index.js"
+  },
   "funding": "https://github.com/j9t/obsohtml?sponsor=1",
   "homepage": "https://github.com/j9t/obsohtml",
   "keywords": [
@@ -16,6 +19,7 @@
     "semantics"
   ],
   "license": "MIT",
+  "main": "src/index.js",
   "name": "obsohtml",
   "repository": {
     "type": "git",
@@ -33,5 +37,5 @@
     "test": "node --test bin/obsohtml.test.js"
   },
   "type": "module",
-  "version": "1.9.9"
+  "version": "1.10.0"
 }
