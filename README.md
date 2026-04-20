@@ -86,3 +86,11 @@ This started as an experiment, in which I used AI to produce this little HTML qu
 ## Acknowledgments
 
 Thanks to [@mattbrundage](https://github.com/mattbrundage), [@FabianBeiner](https://github.com/FabianBeiner), and [@AndrewMac](https://github.com/AndrewMac) for helping to make ObsoHTML better!
+
+***
+
+You might like some of my other work:
+
+* Optimization tools: [HTML Minifier Next](https://github.com/j9t/html-minifier-next) · [Image Guard](https://github.com/j9t/image-guard) · [Compressor.js Next](https://github.com/j9t/compressorjs-next) · [.htaccess Punk](https://github.com/j9t/htaccess-punk)
+* Defense tools: [IA Defensa](https://iadefensa.com/solutions/)
+* Resources for quality web development: [Articles](https://meiert.com/topics/development/) · [Books](https://meiert.com/topics/books/) (recommended: [_On Web Development II_](https://meiert.com/blog/on-web-development-2/)) · [News](https://frontenddogma.com/) · [Terminology](https://webglossary.info/)
