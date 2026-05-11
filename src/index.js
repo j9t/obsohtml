@@ -17,8 +17,8 @@ const attributeRegexes = new Map(
   obsoleteAttributes.map(attribute => [
     attribute,
     // Matches the attribute preceded by whitespace anywhere in a tag, without
-    // requiring it to be the last attribute before the closing bracket.
-    new RegExp(`<[^>]*\\s${attribute}\\b(\\s*=\\s*(?:"[^"]*"|'[^']*'|[^"'\\s>]+))?`, 'i'),
+    // requiring it to be the last attribute before the closing bracket
+    new RegExp(`<(?:[^>"']|"[^"]*"|'[^']*')*\\s${attribute}\\b(\\s*=\\s*(?:"[^"]*"|'[^']*'|[^"'\\s>]+))?`, 'i'),
   ])
 );
 

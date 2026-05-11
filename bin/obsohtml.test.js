@@ -195,4 +195,18 @@ describe('`checkMarkup`', () => {
     const { elements } = checkMarkup('<centers>Hello</centers>');
     assert.deepEqual(elements, []);
   });
+
+  test('Do not flag an obsolete attribute name appearing inside a quoted attribute value', () => {
+    // “scrolling” inside `content="…"`, “background” inside `content="…"`, and
+    // “border” inside `alt="…"` are all text—not actual HTML attributes
+    const cases = [
+      '<meta property="og:title" content="Infinite scrolling on the web">',
+      '<meta content="Busyness and Background Noise on Websites">',
+      '<img alt="A graphic indicating a border between regions.">',
+    ];
+    for (const html of cases) {
+      const { attributes } = checkMarkup(html);
+      assert.deepEqual(attributes, [], `Expected no attributes for: ${html}`);
+    }
+  });
 });
