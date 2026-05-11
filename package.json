@@ -9,8 +9,8 @@
   "description": "HTML checker for obsolete and proprietary elements and attributes",
   "devDependencies": {
     "@eslint/js": "^10.0.0",
-    "eslint": "^10.2.0",
-    "globals": "^17.5.0",
+    "eslint": "^10.3.0",
+    "globals": "^17.6.0",
     "typescript": "^6.0.3"
   },
   "exports": {
