@@ -203,6 +203,7 @@ describe('`checkMarkup`', () => {
       '<meta property="og:title" content="Infinite scrolling on the web">',
       '<meta content="Busyness and Background Noise on Websites">',
       '<img alt="A graphic indicating a border between regions.">',
+      "<img alt='A graphic indicating a border between regions.'>",
     ];
     for (const html of cases) {
       const { attributes } = checkMarkup(html);
