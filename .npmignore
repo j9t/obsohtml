@@ -1,3 +1,8 @@
+.claude/
+.github/
+bin/obsohtml.test.js
+.editorconfig
 .gitignore
 .nvmrc
-node_modules/
+eslint.config.js
+tsconfig.json
