@@ -8,17 +8,15 @@ ObsoHTML has inherent limitations and may not find all obsolete elements and att
 
 ## Usage
 
-### 1. Via CLI
+### 1. CLI
 
 #### Installation
 
-```console
-npm i obsohtml
+Consider using ObsoHTML via npx:
+
+```shell
+npx obsohtml
 ```
-
-(To install ObsoHTML globally, use the `-g` flag, as in `npm i -g obsohtml`.)
-
-To use ObsoHTML without installing, run it via `npx obsohtml`. To use it as a standalone script, [download or fork the source repository](https://github.com/j9t/obsohtml) and run `node bin/obsohtml.js` directly—the same options apply.
 
 #### Execution
 
@@ -30,25 +28,25 @@ ObsoHTML can be run in “verbose” mode by appending `-v` or `--verbose` to th
 
 Use the default directory (user home directory):
 
-```console
+```shell
 npx obsohtml
 ```
 
 Specify a folder using an absolute path (easiest and most common use case):
 
-```console
+```shell
 npx obsohtml -f /path/to/folder
 ```
 
 Specify a folder using a relative path:
 
-```console
+```shell
 npx obsohtml -f ../path/to/folder
 ```
 
 ### 2. Programmatic API
 
-ObsoHTML can be imported as a module to check HTML strings in your own tooling:
+Install ObsoHTML in your project, e.g., via `npm i -D obsohtml`, then import and use what you need:
 
 ```js
 import { checkMarkup, obsoleteElements, obsoleteAttributes } from 'obsohtml';
