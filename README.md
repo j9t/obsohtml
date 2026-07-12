@@ -44,7 +44,7 @@ Specify a folder using a relative path:
 npx obsohtml -f ../path/to/folder
 ```
 
-### 2. Programmatic API
+### 2. Programmatic Use
 
 Install ObsoHTML in your project, e.g., via `npm i -D obsohtml`, then import and use what you need:
 
