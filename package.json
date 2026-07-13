@@ -19,6 +19,11 @@
       "default": "./src/index.js"
     }
   },
+  "files": [
+    "bin/obsohtml.js",
+    "src",
+    "!src/index.test.ts"
+  ],
   "funding": "https://github.com/j9t/obsohtml?sponsor=1",
   "homepage": "https://github.com/j9t/obsohtml",
   "keywords": [
