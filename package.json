@@ -42,6 +42,7 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "prepare": "git config core.hooksPath .githooks || true",
     "start": "node ./bin/obsohtml.js",
     "test": "npm run test:types && node --test bin/obsohtml.test.js",
     "test:types": "tsc"
