@@ -94,7 +94,9 @@ function main(projectDirectory = defaultProjectDirectory, verbose = false) {
   try {
     stats = fs.lstatSync(projectDirectory);
   } catch (err) {
-    if (err.code !== 'ENOENT') throw err;
+    // ENOTDIR is a path below an existing file—unresolvable the same way a
+    // missing one is, so it gets the same message rather than a stack trace
+    if (err.code !== 'ENOENT' && err.code !== 'ENOTDIR') throw err;
   }
 
   // A named target that isn’t there is the user’s to fix

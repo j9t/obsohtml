@@ -123,6 +123,14 @@ describe('ObsoHTML', () => {
     assert.strictEqual(status, 1);
   });
 
+  // `lstat()` reports a path below an existing file as ENOTDIR, not ENOENT
+  test('Fail on a target whose parent is a file', () => {
+    const { stderr, status } = run([path.join(tempFile, 'nested')]);
+    assert.ok(stderr.includes('No such file or directory'));
+    assert.ok(!stderr.includes('ENOTDIR'), 'Should not surface a raw stack trace');
+    assert.strictEqual(status, 1);
+  });
+
   test('Check the working directory when no path is given', () => {
     const { stdout } = run([], { cwd: tempDir });
     assert.ok(stdout.includes("Found obsolete element 'center'"));
