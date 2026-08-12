@@ -20,28 +20,34 @@ npx obsohtml
 
 #### Execution
 
-ObsoHTML accepts a folder or file path as a command line option, which can be specified in both short form (`-f`) and long form (`--folder`). The path can be either absolute or relative.
+ObsoHTML accepts a folder or file path as an argument. The path can be either absolute or relative; when it’s omitted, ObsoHTML checks the current directory.
 
 ObsoHTML can be run in “verbose” mode by appending `-v` or `--verbose` to the command. This will show information about files and directories that were skipped.
 
 ##### Example Commands
 
-Use the default directory (user home directory):
+Check the current directory:
 
 ```shell
 npx obsohtml
 ```
 
-Specify a folder using an absolute path (easiest and most common use case):
+Specify a folder using an absolute path:
 
 ```shell
-npx obsohtml -f /path/to/folder
+npx obsohtml /path/to/folder
 ```
 
 Specify a folder using a relative path:
 
 ```shell
-npx obsohtml -f ../path/to/folder
+npx obsohtml ../path/to/folder
+```
+
+Specify a single file:
+
+```shell
+npx obsohtml src/index.html
 ```
 
 ### 2. Programmatic Use
