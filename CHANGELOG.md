@@ -4,6 +4,15 @@ As of version 1.10.0, all notable changes to ObsoHTML are documented in this fil
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-08-12
+
+### Changed
+
+* **BREAKING:** Changed to default to the current directory instead of the user’s home directory when no path is given
+* **BREAKING:** Removed `-f`/`--folder`, replaced by the positional argument
+* Accepted the path as a positional argument (`obsohtml path/to/folder`)
+* Changed to fail with a message and a non-zero exit when the given path doesn’t exist
+
 ## [1.10.2] - 2026-08-02
 
 ### Changed

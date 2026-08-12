@@ -2,7 +2,6 @@
 
 import { Command } from 'commander';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { styleText } from 'node:util';
 import { checkMarkup } from '../src/index.js';
@@ -12,8 +11,8 @@ const program = new Command();
 // Directories to skip during traversal
 const EXCLUDED_DIRS = new Set(['node_modules', '.git', 'dist', 'build', 'vendor']);
 
-// Default project directory (user’s home directory)
-const defaultProjectDirectory = os.homedir();
+// Default project directory (the working directory)
+const defaultProjectDirectory = '.';
 
 // Track whether any obsolete HTML was found
 let foundObsolete = false;
@@ -95,10 +94,18 @@ function main(projectDirectory = defaultProjectDirectory, verbose = false) {
   try {
     stats = fs.lstatSync(projectDirectory);
   } catch (err) {
-    if (err.code !== 'ENOENT') throw err;
+    // ENOTDIR is a path below an existing file—unresolvable the same way a
+    // missing one is, so it gets the same message rather than a stack trace
+    if (err.code !== 'ENOENT' && err.code !== 'ENOTDIR') throw err;
   }
 
-  if (stats?.isFile()) {
+  // A named target that isn’t there is the user’s to fix
+  if (!stats) {
+    console.error(styleText('red', `No such file or directory: ${projectDirectory}`));
+    process.exit(1);
+  }
+
+  if (stats.isFile()) {
     findObsolete(projectDirectory);
   } else {
     walkDirectory(projectDirectory, verbose);
@@ -107,14 +114,16 @@ function main(projectDirectory = defaultProjectDirectory, verbose = false) {
   if (foundObsolete) process.exit(1);
 }
 
-// Define command line options
+// Define command line arguments and options
 program
-  .option('-f, --folder <path>', 'specify the project directory', defaultProjectDirectory)
+  .argument('[path]', 'folder or file to check (default: current directory)')
   .option('-v, --verbose', 'enable verbose output')
   .parse(process.argv);
 
 // Get the project directory and verbose flag from command line arguments or use the default
 const options = program.opts();
-const projectDirectory = options.folder;
+const [positional] = program.args;
+
+const projectDirectory = positional || defaultProjectDirectory;
 const verbose = options.verbose;
 main(projectDirectory, verbose);

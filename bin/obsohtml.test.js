@@ -10,8 +10,8 @@ import { checkMarkup, obsoleteElements, obsoleteAttributes } from '../src/index.
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const scriptPath = path.join(__dirname, 'obsohtml.js');
 
-function run(args) {
-  const result = spawnSync('node', [scriptPath, ...args], { encoding: 'utf-8' });
+function run(args, options = {}) {
+  const result = spawnSync('node', [scriptPath, ...args], { encoding: 'utf-8', ...options });
   return {
     stdout: stripVTControlCharacters(result.stdout),
     stderr: stripVTControlCharacters(result.stderr),
@@ -54,55 +54,55 @@ describe('ObsoHTML', () => {
   });
 
   test('Detect obsolete elements', () => {
-    const { stdout } = run(['-f', tempDir]);
+    const { stdout } = run([tempDir]);
     assert.ok(stdout.includes("Found obsolete element 'center'"));
   });
 
   test('Detect obsolete attributes', () => {
-    const { stdout } = run(['-f', tempDir]);
+    const { stdout } = run([tempDir]);
     assert.ok(stdout.includes("Found obsolete attribute 'align'"));
   });
 
   test('Detect obsolete elements and attributes using absolute path', () => {
-    const { stdout } = run(['-f', path.resolve(tempDir)]);
+    const { stdout } = run([path.resolve(tempDir)]);
     assert.ok(stdout.includes("Found obsolete element 'center'"));
     assert.ok(stdout.includes("Found obsolete attribute 'align'"));
   });
 
   test('Detect obsolete elements and attributes using relative path', () => {
-    const { stdout } = run(['--folder', path.relative(process.cwd(), tempDir)]);
+    const { stdout } = run([path.relative(process.cwd(), tempDir)]);
     assert.ok(stdout.includes("Found obsolete element 'center'"));
     assert.ok(stdout.includes("Found obsolete attribute 'align'"));
   });
 
   test('Detect obsolete minimized attributes', () => {
-    const { stdout } = run(['-f', tempDir]);
+    const { stdout } = run([tempDir]);
     assert.ok(stdout.includes("Found obsolete attribute 'noshade'"));
     assert.ok(!stdout.includes("Found obsolete attribute 'nowrap'"));
   });
 
   test('Detect obsolete elements in Twig file', () => {
-    const { stdout } = run(['-f', tempDir]);
+    const { stdout } = run([tempDir]);
     assert.ok(stdout.includes("Found obsolete element 'isindex'"));
   });
 
   test('Detect obsolete attribute when it is not the last attribute in a tag', () => {
-    const { stdout } = run(['-f', tempFileWithMidTagAttribute]);
+    const { stdout } = run([tempFileWithMidTagAttribute]);
     assert.ok(stdout.includes("Found obsolete attribute 'align'"));
   });
 
   test('Detect obsolete elements in JSX file', () => {
-    const { stdout } = run(['-f', tempJsxFile]);
+    const { stdout } = run([tempJsxFile]);
     assert.ok(stdout.includes("Found obsolete element 'center'"));
   });
 
   test('Detect obsolete elements in TSX file', () => {
-    const { stdout } = run(['-f', tempTsxFile]);
+    const { stdout } = run([tempTsxFile]);
     assert.ok(stdout.includes("Found obsolete element 'marquee'"));
   });
 
   test('Exit with code 1 when obsolete HTML is found', () => {
-    const { status } = run(['-f', tempDir]);
+    const { status } = run([tempDir]);
     assert.strictEqual(status, 1);
   });
 
@@ -110,16 +110,37 @@ describe('ObsoHTML', () => {
     const cleanFile = path.join(tempDir, 'clean.html');
     fs.writeFileSync(cleanFile, '<!DOCTYPE html><html><title>Clean</title><body><p>No issues here.</p></body></html>');
     try {
-      const { status } = run(['-f', cleanFile]);
+      const { status } = run([cleanFile]);
       assert.strictEqual(status, 0);
     } finally {
       fs.unlinkSync(cleanFile);
     }
   });
 
-  test('Verbose mode reports skipped non-existent directory', () => {
-    const { stderr } = run(['-f', path.join(tempDir, 'nonexistent'), '-v']);
-    assert.ok(stderr.includes('Skipping non-existent directory'));
+  test('Fail on a target that does not exist', () => {
+    const { stderr, status } = run([path.join(tempDir, 'nonexistent')]);
+    assert.ok(stderr.includes('No such file or directory'));
+    assert.strictEqual(status, 1);
+  });
+
+  // `lstat()` reports a path below an existing file as ENOTDIR, not ENOENT
+  test('Fail on a target whose parent is a file', () => {
+    const { stderr, status } = run([path.join(tempFile, 'nested')]);
+    assert.ok(stderr.includes('No such file or directory'));
+    assert.ok(!stderr.includes('ENOTDIR'), 'Should not surface a raw stack trace');
+    assert.strictEqual(status, 1);
+  });
+
+  test('Check the working directory when no path is given', () => {
+    const { stdout } = run([], { cwd: tempDir });
+    assert.ok(stdout.includes("Found obsolete element 'center'"));
+    assert.ok(stdout.includes("Found obsolete attribute 'align'"));
+  });
+
+  test('Reject the removed `--folder` option', () => {
+    const { stderr, status } = run(['--folder', tempDir]);
+    assert.ok(stderr.includes('unknown option'));
+    assert.strictEqual(status, 1);
   });
 });
 
