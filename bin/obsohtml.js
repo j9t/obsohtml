@@ -99,7 +99,6 @@ function main(projectDirectory = defaultProjectDirectory, verbose = false) {
     if (err.code !== 'ENOENT' && err.code !== 'ENOTDIR') throw err;
   }
 
-  // A named target that isn’t there is the user’s to fix
   if (!stats) {
     console.error(styleText('red', `No such file or directory: ${projectDirectory}`));
     process.exit(1);
