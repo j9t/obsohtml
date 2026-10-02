@@ -132,14 +132,18 @@ try {
     allowPositionals: true,
   }));
 } catch (err) {
-  const message = err.message.charAt(0).toLowerCase() + err.message.slice(1);
-  console.error(styleText('red', `error: ${message}`));
+  console.error(styleText('red', `Error: ${err.message}`));
   process.exit(1);
 }
 
 if (values.help) {
   process.stdout.write(usage);
   process.exit(0);
+}
+
+if (positionals.length > 1) {
+  console.error(styleText('red', `Error: Too many arguments “${positionals[1]}”`));
+  process.exit(1);
 }
 
 // Get the project directory and verbose flag from command line arguments or use the default
