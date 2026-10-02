@@ -1,12 +1,9 @@
 #!/usr/bin/env node
 
-import { Command } from 'commander';
 import fs from 'node:fs';
 import path from 'node:path';
-import { styleText } from 'node:util';
+import { parseArgs, styleText } from 'node:util';
 import { checkMarkup } from '../src/index.js';
-
-const program = new Command();
 
 // Directories to skip during traversal
 const EXCLUDED_DIRS = new Set(['node_modules', '.git', 'dist', 'build', 'vendor']);
@@ -114,15 +111,42 @@ function main(projectDirectory = defaultProjectDirectory, verbose = false) {
 }
 
 // Define command line arguments and options
-program
-  .argument('[path]', 'folder or file to check (default: current directory)')
-  .option('-v, --verbose', 'enable verbose output')
-  .parse(process.argv);
+const usage = `Usage: obsohtml [options] [path]
+
+Arguments:
+  path           Folder or file to check (default: current directory)
+
+Options:
+  -v, --verbose  Enable verbose output
+  -h, --help     Display help
+`;
+
+let values, positionals;
+
+try {
+  ({ values, positionals } = parseArgs({
+    options: {
+      verbose: { type: 'boolean', short: 'v' },
+      help: { type: 'boolean', short: 'h' },
+    },
+    allowPositionals: true,
+  }));
+} catch (err) {
+  console.error(styleText('red', `Error: ${err.message}`));
+  process.exit(1);
+}
+
+if (values.help) {
+  process.stdout.write(usage);
+  process.exit(0);
+}
+
+if (positionals.length > 1) {
+  console.error(styleText('red', `Error: Too many arguments “${positionals[1]}”`));
+  process.exit(1);
+}
 
 // Get the project directory and verbose flag from command line arguments or use the default
-const options = program.opts();
-const [positional] = program.args;
-
+const [positional] = positionals;
 const projectDirectory = positional || defaultProjectDirectory;
-const verbose = options.verbose;
-main(projectDirectory, verbose);
+main(projectDirectory, values.verbose);

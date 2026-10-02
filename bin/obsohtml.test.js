@@ -139,7 +139,13 @@ describe('ObsoHTML', () => {
 
   test('Reject the removed `--folder` option', () => {
     const { stderr, status } = run(['--folder', tempDir]);
-    assert.ok(stderr.includes('unknown option'));
+    assert.ok(stderr.includes('Unknown option'));
+    assert.strictEqual(status, 1);
+  });
+
+  test('Reject more than one path', () => {
+    const { stderr, status } = run([tempDir, tempFile]);
+    assert.ok(stderr.includes('Too many arguments'));
     assert.strictEqual(status, 1);
   });
 });
