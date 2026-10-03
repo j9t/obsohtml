@@ -53,60 +53,60 @@ describe('ObsoHTML', () => {
     fs.rmdirSync(tempDir);
   });
 
-  test('Detect obsolete elements', () => {
+  test('Detects obsolete elements', () => {
     const { stdout } = run([tempDir]);
     assert.ok(stdout.includes("Found obsolete element 'center'"));
   });
 
-  test('Detect obsolete attributes', () => {
+  test('Detects obsolete attributes', () => {
     const { stdout } = run([tempDir]);
     assert.ok(stdout.includes("Found obsolete attribute 'align'"));
   });
 
-  test('Detect obsolete elements and attributes using absolute path', () => {
+  test('Detects obsolete elements and attributes using absolute path', () => {
     const { stdout } = run([path.resolve(tempDir)]);
     assert.ok(stdout.includes("Found obsolete element 'center'"));
     assert.ok(stdout.includes("Found obsolete attribute 'align'"));
   });
 
-  test('Detect obsolete elements and attributes using relative path', () => {
+  test('Detects obsolete elements and attributes using relative path', () => {
     const { stdout } = run([path.relative(process.cwd(), tempDir)]);
     assert.ok(stdout.includes("Found obsolete element 'center'"));
     assert.ok(stdout.includes("Found obsolete attribute 'align'"));
   });
 
-  test('Detect obsolete minimized attributes', () => {
+  test('Detects obsolete minimized attributes', () => {
     const { stdout } = run([tempDir]);
     assert.ok(stdout.includes("Found obsolete attribute 'noshade'"));
     assert.ok(!stdout.includes("Found obsolete attribute 'nowrap'"));
   });
 
-  test('Detect obsolete elements in Twig file', () => {
+  test('Detects obsolete elements in Twig file', () => {
     const { stdout } = run([tempDir]);
     assert.ok(stdout.includes("Found obsolete element 'isindex'"));
   });
 
-  test('Detect obsolete attribute when it is not the last attribute in a tag', () => {
+  test('Detects obsolete attribute when it is not the last attribute in a tag', () => {
     const { stdout } = run([tempFileWithMidTagAttribute]);
     assert.ok(stdout.includes("Found obsolete attribute 'align'"));
   });
 
-  test('Detect obsolete elements in JSX file', () => {
+  test('Detects obsolete elements in JSX file', () => {
     const { stdout } = run([tempJsxFile]);
     assert.ok(stdout.includes("Found obsolete element 'center'"));
   });
 
-  test('Detect obsolete elements in TSX file', () => {
+  test('Detects obsolete elements in TSX file', () => {
     const { stdout } = run([tempTsxFile]);
     assert.ok(stdout.includes("Found obsolete element 'marquee'"));
   });
 
-  test('Exit with code 1 when obsolete HTML is found', () => {
+  test('Exits with code 1 when obsolete HTML is found', () => {
     const { status } = run([tempDir]);
     assert.strictEqual(status, 1);
   });
 
-  test('Exit with code 0 when no obsolete HTML is found', () => {
+  test('Exits with code 0 when no obsolete HTML is found', () => {
     const cleanFile = path.join(tempDir, 'clean.html');
     fs.writeFileSync(cleanFile, '<!DOCTYPE html><html><title>Clean</title><body><p>No issues here.</p></body></html>');
     try {
@@ -117,33 +117,33 @@ describe('ObsoHTML', () => {
     }
   });
 
-  test('Fail on a target that does not exist', () => {
+  test('Fails on a target that does not exist', () => {
     const { stderr, status } = run([path.join(tempDir, 'nonexistent')]);
     assert.ok(stderr.includes('No such file or directory'));
     assert.strictEqual(status, 1);
   });
 
   // `lstat()` reports a path below an existing file as ENOTDIR, not ENOENT
-  test('Fail on a target whose parent is a file', () => {
+  test('Fails on a target whose parent is a file', () => {
     const { stderr, status } = run([path.join(tempFile, 'nested')]);
     assert.ok(stderr.includes('No such file or directory'));
     assert.ok(!stderr.includes('ENOTDIR'), 'Should not surface a raw stack trace');
     assert.strictEqual(status, 1);
   });
 
-  test('Check the working directory when no path is given', () => {
+  test('Checks the working directory when no path is given', () => {
     const { stdout } = run([], { cwd: tempDir });
     assert.ok(stdout.includes("Found obsolete element 'center'"));
     assert.ok(stdout.includes("Found obsolete attribute 'align'"));
   });
 
-  test('Reject the removed `--folder` option', () => {
+  test('Rejects the removed `--folder` option', () => {
     const { stderr, status } = run(['--folder', tempDir]);
     assert.ok(stderr.includes('Unknown option'));
     assert.strictEqual(status, 1);
   });
 
-  test('Reject more than one path', () => {
+  test('Rejects more than one path', () => {
     const { stderr, status } = run([tempDir, tempFile]);
     assert.ok(stderr.includes('Too many arguments'));
     assert.strictEqual(status, 1);
@@ -151,7 +151,7 @@ describe('ObsoHTML', () => {
 });
 
 describe('`obsoleteElements`', () => {
-  test('Export as a non-empty array of strings', () => {
+  test('Is a non-empty array of strings', () => {
     assert.ok(Array.isArray(obsoleteElements));
     assert.ok(obsoleteElements.length > 0);
     assert.ok(obsoleteElements.every(e => typeof e === 'string'));
@@ -159,7 +159,7 @@ describe('`obsoleteElements`', () => {
 });
 
 describe('`obsoleteAttributes`', () => {
-  test('Export as a non-empty array of strings', () => {
+  test('Is a non-empty array of strings', () => {
     assert.ok(Array.isArray(obsoleteAttributes));
     assert.ok(obsoleteAttributes.length > 0);
     assert.ok(obsoleteAttributes.every(a => typeof a === 'string'));
@@ -167,63 +167,63 @@ describe('`obsoleteAttributes`', () => {
 });
 
 describe('`checkMarkup`', () => {
-  test('Return empty arrays for clean HTML', () => {
+  test('Returns empty arrays for clean HTML', () => {
     const result = checkMarkup('<p>Hello <strong>world</strong></p>');
     assert.deepEqual(result, { elements: [], attributes: [] });
   });
 
-  test('Return empty arrays for an empty string', () => {
+  test('Returns empty arrays for an empty string', () => {
     const result = checkMarkup('');
     assert.deepEqual(result, { elements: [], attributes: [] });
   });
 
-  test('Throw a TypeError for non-string input', () => {
+  test('Throws a TypeError for non-string input', () => {
     assert.throws(() => checkMarkup(null), TypeError);
     assert.throws(() => checkMarkup(42), TypeError);
   });
 
-  test('Detect an obsolete element', () => {
+  test('Detects an obsolete element', () => {
     const { elements, attributes } = checkMarkup('<center>Hello</center>');
     assert.ok(elements.includes('center'));
     assert.deepEqual(attributes, []);
   });
 
-  test('Detect an obsolete attribute', () => {
+  test('Detects an obsolete attribute', () => {
     const { elements, attributes } = checkMarkup('<img src="x.jpg" align="left">');
     assert.deepEqual(elements, []);
     assert.ok(attributes.includes('align'));
   });
 
-  test('Detect multiple obsolete elements in one string', () => {
+  test('Detects multiple obsolete elements in one string', () => {
     const { elements } = checkMarkup('<marquee><blink>Hello</blink></marquee>');
     assert.ok(elements.includes('marquee'));
     assert.ok(elements.includes('blink'));
   });
 
-  test('Detect multiple obsolete attributes in one string', () => {
+  test('Detects multiple obsolete attributes in one string', () => {
     const { attributes } = checkMarkup('<table border="1" bgcolor="#fff"><tr valign="top"></tr></table>');
     assert.ok(attributes.includes('border'));
     assert.ok(attributes.includes('bgcolor'));
     assert.ok(attributes.includes('valign'));
   });
 
-  test('Detect both obsolete elements and attributes in one string', () => {
+  test('Detects both obsolete elements and attributes in one string', () => {
     const { elements, attributes } = checkMarkup('<center><img align="left"></center>');
     assert.ok(elements.includes('center'));
     assert.ok(attributes.includes('align'));
   });
 
-  test('Detect obsolete elements case-insensitively', () => {
+  test('Detects obsolete elements case-insensitively', () => {
     const { elements } = checkMarkup('<CENTER>Hello</CENTER>');
     assert.ok(elements.includes('center'));
   });
 
-  test('Do not detect partial tag name matches', () => {
+  test('Does not detect partial tag name matches', () => {
     const { elements } = checkMarkup('<centers>Hello</centers>');
     assert.deepEqual(elements, []);
   });
 
-  test('Do not flag an obsolete attribute name appearing inside a quoted attribute value', () => {
+  test('Does not flag an obsolete attribute name appearing inside a quoted attribute value', () => {
     // “scrolling” inside `content="…"`, “background” inside `content="…"`, and
     // “border” inside `alt="…"` are all text—not actual HTML attributes
     const cases = [
