@@ -7,7 +7,8 @@
  * This file is not executed—it only needs to type-check successfully.
  */
 
-import { checkMarkup, obsoleteElements, obsoleteAttributes } from './index.js';
+import { checkMarkup, locateMarkup, obsoleteElements, obsoleteAttributes } from './index.js';
+import type { Occurrence } from './index.js';
 
 // Exported arrays are readonly string arrays
 const els: readonly string[] = obsoleteElements;
@@ -22,4 +23,12 @@ checkMarkup(null);
 // @ts-expect-error
 checkMarkup(42);
 
-export { els, attrs, result };
+// `locateMarkup` returns occurrences with name, line, and column
+const located: { elements: Occurrence[]; attributes: Occurrence[] } = locateMarkup('<center>test</center>');
+const { name, line, col }: { name: string; line: number; col: number } = located.elements[0];
+
+// `locateMarkup` rejects non-string input
+// @ts-expect-error
+locateMarkup(null);
+
+export { els, attrs, result, located, name, line, col };

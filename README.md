@@ -55,11 +55,15 @@ npx obsohtml src/index.html
 Install ObsoHTML in your project, e.g., via `npm i -D obsohtml`, then import and use what you need:
 
 ```js
-import { checkMarkup, obsoleteElements, obsoleteAttributes } from 'obsohtml';
+import { checkMarkup, locateMarkup, obsoleteElements, obsoleteAttributes } from 'obsohtml';
 
 const { elements, attributes } = checkMarkup('<center>Hello</center>');
 // elements: ['center']
 // attributes: []
+
+const located = locateMarkup('<center>\n<img align=left></center>');
+// elements: [{ name: 'center', line: 1, col: 1 }]
+// attributes: [{ name: 'align', line: 2, col: 6 }]
 ```
 
 #### `checkMarkup(html)`
@@ -68,6 +72,13 @@ Checks an HTML string for obsolete and proprietary elements and attributes.
 
 * **Parameter**: `html` (string)—the HTML content to check
 * **Returns**: `{ elements: string[], attributes: string[] }`—arrays of found obsolete element and attribute names
+
+#### `locateMarkup(html)`
+
+Locates every obsolete and proprietary element and attribute in an HTML string.
+
+* **Parameter**: `html` (string)—the HTML content to check
+* **Returns**: `{ elements: Occurrence[], attributes: Occurrence[] }`—every occurrence as `{ name, line, col }`, sorted by position (lines and columns start at 1; for elements, the column points to `<`, for attributes to the attribute name)
 
 #### `obsoleteElements`
 
@@ -79,7 +90,7 @@ Array of obsolete or proprietary HTML attribute names checked by ObsoHTML.
 
 ## Output
 
-The script will output messages to the console indicating any obsolete elements or attributes found in the scanned files, along with the file paths where they were detected.
+The script will output messages to the console indicating any obsolete elements or attributes found in the scanned files, one per occurrence, along with where they were detected (`path:line:col`).
 
 The script exits with code `1` if any obsolete HTML is found, and `0` if none is found, making it suitable for use in CI pipelines.
 

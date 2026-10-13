@@ -4,6 +4,16 @@ As of version 1.10.0, all notable changes to ObsoHTML are documented in this fil
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-10-13
+
+### Added
+
+* Added `locateMarkup()`, returning every obsolete element and attribute with its line and column
+
+### Changed
+
+* Changed command line output to report each occurrence with its location (`path:line:col`), rather than each name once per file
+
 ## [2.0.1] - 2026-10-02
 
 ### Changed

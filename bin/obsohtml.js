@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { parseArgs, styleText } from 'node:util';
-import { checkMarkup } from '../src/index.js';
+import { locateMarkup } from '../src/index.js';
 
 // Directories to skip during traversal
 const EXCLUDED_DIRS = new Set(['node_modules', '.git', 'dist', 'build', 'vendor']);
@@ -16,16 +16,16 @@ let foundObsolete = false;
 
 // Function to find obsolete elements and attributes in a file
 function findObsolete(filePath) {
-  const { elements, attributes } = checkMarkup(fs.readFileSync(filePath, 'utf8'));
+  const { elements, attributes } = locateMarkup(fs.readFileSync(filePath, 'utf8'));
 
-  for (const element of elements) {
+  for (const { name, line, col } of elements) {
     foundObsolete = true;
-    console.log(styleText('blue', `Found obsolete element ${styleText('bold', `'${element}'`)} in ${filePath}`));
+    console.log(styleText('blue', `Found obsolete element ${styleText('bold', `'${name}'`)} in ${filePath}:${line}:${col}`));
   }
 
-  for (const attribute of attributes) {
+  for (const { name, line, col } of attributes) {
     foundObsolete = true;
-    console.log(styleText('green', `Found obsolete attribute ${styleText('bold', `'${attribute}'`)} in ${filePath}`));
+    console.log(styleText('green', `Found obsolete attribute ${styleText('bold', `'${name}'`)} in ${filePath}:${line}:${col}`));
   }
 }
 

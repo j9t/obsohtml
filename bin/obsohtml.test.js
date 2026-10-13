@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, test, before, after } from 'node:test';
 import assert from 'node:assert';
 import { stripVTControlCharacters } from 'node:util';
-import { checkMarkup, obsoleteElements, obsoleteAttributes } from '../src/index.js';
+import { checkMarkup, locateMarkup, obsoleteElements, obsoleteAttributes } from '../src/index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const scriptPath = path.join(__dirname, 'obsohtml.js');
@@ -56,6 +56,11 @@ describe('ObsoHTML', () => {
   test('Detects obsolete elements', () => {
     const { stdout } = run([tempDir]);
     assert.ok(stdout.includes("Found obsolete element 'center'"));
+  });
+
+  test('Reports the line and column of each finding', () => {
+    const { stdout } = run([tempFileWithAttributes]);
+    assert.ok(stdout.includes(`Found obsolete attribute 'align' in ${tempFileWithAttributes}:1:74`));
   });
 
   test('Detects obsolete attributes', () => {
@@ -236,5 +241,61 @@ describe('`checkMarkup`', () => {
       const { attributes } = checkMarkup(html);
       assert.deepEqual(attributes, [], `Expected no attributes for: ${html}`);
     }
+  });
+});
+
+describe('`locateMarkup`', () => {
+  test('Returns empty arrays for clean HTML', () => {
+    assert.deepEqual(locateMarkup('<p>Hello <strong>world</strong></p>'), { elements: [], attributes: [] });
+  });
+
+  test('Throws a TypeError for non-string input', () => {
+    assert.throws(() => locateMarkup(null), TypeError);
+    assert.throws(() => locateMarkup(42), TypeError);
+  });
+
+  test('Returns line and column of an obsolete element', () => {
+    const { elements } = locateMarkup('<p>\n  <center>Hello</center>');
+    assert.deepEqual(elements, [{ name: 'center', line: 2, col: 3 }]);
+  });
+
+  test('Returns line and column of an obsolete attribute name', () => {
+    const { attributes } = locateMarkup('<p>\n<img src="x.jpg"\n     align="left">');
+    assert.deepEqual(attributes, [{ name: 'align', line: 3, col: 6 }]);
+  });
+
+  test('Returns every occurrence', () => {
+    const { elements, attributes } = locateMarkup('<font>A</font>\n<font>B</font>\n<td nowrap><td nowrap>');
+    assert.deepEqual(elements, [
+      { name: 'font', line: 1, col: 1 },
+      { name: 'font', line: 2, col: 1 },
+    ]);
+    assert.deepEqual(attributes, [
+      { name: 'nowrap', line: 3, col: 5 },
+      { name: 'nowrap', line: 3, col: 16 },
+    ]);
+  });
+
+  test('Sorts occurrences by position', () => {
+    const { elements } = locateMarkup('<tt>A</tt><center>B</center><tt>C</tt>');
+    assert.deepEqual(elements.map(e => e.name), ['tt', 'center', 'tt']);
+  });
+
+  test('Returns names in lowercase', () => {
+    const { elements, attributes } = locateMarkup('<CENTER ALIGN=left>');
+    assert.deepEqual(elements, [{ name: 'center', line: 1, col: 1 }]);
+    assert.deepEqual(attributes, [{ name: 'align', line: 1, col: 9 }]);
+  });
+
+  test('Does not flag an obsolete attribute name appearing inside a quoted attribute value', () => {
+    assert.deepEqual(locateMarkup('<img alt="A border between regions." border=0>').attributes, [{ name: 'border', line: 1, col: 38 }]);
+  });
+
+  test('Agrees with `checkMarkup`', () => {
+    const html = '<marquee bgcolor=red><img align=left><font>A</font></marquee><center>';
+    const { elements, attributes } = locateMarkup(html);
+    const result = checkMarkup(html);
+    assert.deepEqual([...new Set(elements.map(e => e.name))].sort(), [...result.elements].sort());
+    assert.deepEqual([...new Set(attributes.map(a => a.name))].sort(), [...result.attributes].sort());
   });
 });
