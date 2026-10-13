@@ -10,18 +10,29 @@ export const obsoleteAttributes = Object.freeze([
 
 // Pre-compiled regexes for performance
 const elementRegexes = new Map(
-  obsoleteElements.map(element => [element, new RegExp(`<\\s*${element}\\b`, 'gi')])
+  // Names end where HTML ends them, so custom elements like `font-awesome-icon` don’t match
+  obsoleteElements.map(element => [element, new RegExp(`<\\s*${element}(?=[\\s/>]|$)`, 'gi')])
 );
 
-const attributeRegexes = new Map(
-  obsoleteAttributes.map(attribute => [
-    attribute,
-    // Matches the attribute preceded by whitespace anywhere in a tag, without
-    // requiring it to be the last attribute before the closing bracket;
-    // the `d` flag exposes where the name itself starts
-    new RegExp(`<(?:[^>"']|"[^"]*"|'[^']*')*\\s(${attribute})\\b(\\s*=\\s*(?:"[^"]*"|'[^']*'|[^"'\\s>]+))?`, 'gid'),
-  ])
-);
+// Tag-like spans (from `<` up to `>`), and, within them, quoted values to skip
+// and obsolete attribute names preceded by whitespace; as in HTML’s tokenizer,
+// quotes only delimit values right after `=`
+const tagRegex = /<(?:=\s*"[^"]*"|=\s*'[^']*'|[^>])*/g;
+const tagAttributeRegex = new RegExp(`=\\s*"[^"]*"|=\\s*'[^']*'|\\s(${obsoleteAttributes.join('|')})(?=[\\s/>=]|$)`, 'gi');
+
+/**
+ * Call `onFound` with the lowercase name and offset of every obsolete attribute.
+ *
+ * @param {string} html
+ * @param {(name: string, offset: number) => void} onFound
+ */
+function scanAttributes(html, onFound) {
+  for (const tag of html.matchAll(tagRegex)) {
+    for (const m of tag[0].matchAll(tagAttributeRegex)) {
+      if (m[1]) onFound(m[1].toLowerCase(), tag.index + m.index + 1);
+    }
+  }
+}
 
 /**
  * Return a function mapping a character offset to its 1-based line and column.
@@ -70,9 +81,7 @@ export function locateMarkup(html) {
     for (const m of html.matchAll(regex)) elements.push({ name: element, offset: m.index });
   }
 
-  for (const [attribute, regex] of attributeRegexes) {
-    for (const m of html.matchAll(regex)) attributes.push({ name: attribute, offset: /** @type {number[][]} */ (m.indices)[1][0] });
-  }
+  scanAttributes(html, (name, offset) => attributes.push({ name, offset }));
 
   return { elements: toOccurrences(elements), attributes: toOccurrences(attributes) };
 }
@@ -84,12 +93,22 @@ export function locateMarkup(html) {
  * @returns {{ elements: string[], attributes: string[] }}
  */
 export function checkMarkup(html) {
-  const { elements, attributes } = locateMarkup(html);
-  const namesElements = new Set(elements.map(e => e.name));
-  const namesAttributes = new Set(attributes.map(a => a.name));
+  if (typeof html !== 'string') throw new TypeError('`html` must be a string');
+
+  // Global regexes keep `lastIndex` between calls, so it’s reset around each test
+  const isFound = (/** @type {RegExp} */ regex) => {
+    regex.lastIndex = 0;
+    const found = regex.test(html);
+    regex.lastIndex = 0;
+    return found;
+  };
+
+  /** @type {Set<string>} */
+  const namesAttributes = new Set();
+  scanAttributes(html, name => namesAttributes.add(name));
 
   return {
-    elements: obsoleteElements.filter(element => namesElements.has(element)),
+    elements: obsoleteElements.filter(element => isFound(/** @type {RegExp} */ (elementRegexes.get(element)))),
     attributes: obsoleteAttributes.filter(attribute => namesAttributes.has(attribute)),
   };
 }

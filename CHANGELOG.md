@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [2.1.0] - 2026-10-13
 
+### Fixed
+
+* Ensured obsolete attributes are detected after unquoted values containing quotes (like `<img alt=Don't align=left>`), by treating quotes as value delimiters only right after `=`
+* Ensured custom elements and attributes that merely start with an obsolete name (like `<font-awesome-icon>` or `align-content`) aren’t reported
+
 ### Added
 
 * Added `locateMarkup()`, returning every obsolete element and attribute with its line and column
@@ -13,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Changed
 
 * Changed command line output to report each occurrence with its location (`path:line:col`), rather than each name once per file
+* Changed attribute detection to scan each tag once, keeping it linear on long, unclosed tags
 
 ## [2.0.1] - 2026-10-02
 
