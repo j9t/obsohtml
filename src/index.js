@@ -8,30 +8,49 @@ export const obsoleteAttributes = Object.freeze([
   'align', 'background', 'bgcolor', 'border', 'frameborder', 'hspace', 'marginheight', 'marginwidth', 'noshade', 'nowrap', 'scrolling', 'valign', 'vspace'
 ]);
 
-// Pre-compiled regexes for performance
-const elementRegexes = new Map(
-  // Names end where HTML ends them, so custom elements like `font-awesome-icon` don’t match
-  obsoleteElements.map(element => [element, new RegExp(`<\\s*${element}(?=[\\s/>]|$)`, 'gi')])
-);
+// One pre-compiled regex for all elements, so a document is scanned once
+// rather than once per element; names end where HTML ends them, so custom
+// elements like `font-awesome-icon` don’t match (and `frame` doesn’t
+// match `frameset`)
+const elementRegex = new RegExp(`<\\s*(${obsoleteElements.join('|')})(?=[\\s/>]|$)`, 'gi');
 
 // Tag-like spans (from `<` up to `>`), and, within them, quoted values to skip
 // and obsolete attribute names preceded by whitespace; as in HTML’s tokenizer,
 // quotes only delimit values right after `=`
-const tagRegex = /<(?:=\s*"[^"]*"|=\s*'[^']*'|[^>])*/g;
+const tagRegex = /<(?:[^>=]+|=\s*"[^"]*"|=\s*'[^']*'|=)*/g;
 const tagAttributeRegex = new RegExp(`=\\s*"[^"]*"|=\\s*'[^']*'|\\s(${obsoleteAttributes.join('|')})(?=[\\s/>=]|$)`, 'gi');
 
 /**
  * Call `onFound` with the lowercase name and offset of every obsolete attribute.
+ * Stops early when `onFound` returns false.
  *
  * @param {string} html
- * @param {(name: string, offset: number) => void} onFound
+ * @param {(name: string, offset: number) => (boolean | undefined)} onFound
  */
 function scanAttributes(html, onFound) {
+  // One copy per scan: `matchAll` would clone the regex for every tag
+  const attributeRegex = new RegExp(tagAttributeRegex);
   for (const tag of html.matchAll(tagRegex)) {
-    for (const m of tag[0].matchAll(tagAttributeRegex)) {
-      if (m[1]) onFound(m[1].toLowerCase(), tag.index + m.index + 1);
-    }
+    if (!scanTag(tag[0], tag.index, attributeRegex, onFound)) return;
   }
+}
+
+/**
+ * Scan one tag for `scanAttributes`, returning false to stop. A function of its own
+ * rather than an inner loop, which V8 would keep deoptimizing on every exit.
+ *
+ * @param {string} tag
+ * @param {number} offset
+ * @param {RegExp} attributeRegex
+ * @param {(name: string, offset: number) => (boolean | undefined)} onFound
+ * @returns {boolean}
+ */
+function scanTag(tag, offset, attributeRegex, onFound) {
+  let m;
+  while ((m = attributeRegex.exec(tag)) !== null) {
+    if (m[1] && onFound(m[1].toLowerCase(), offset + m.index + 1) === false) return false;
+  }
+  return true;
 }
 
 /**
@@ -68,20 +87,25 @@ function positionFinder(html) {
 export function locateMarkup(html) {
   if (typeof html !== 'string') throw new TypeError('`html` must be a string');
 
+  const elements = [];
+  const attributes = [];
+
+  for (const m of html.matchAll(elementRegex)) {
+    elements.push({ name: m[1].toLowerCase(), offset: m.index });
+  }
+
+  scanAttributes(html, (name, offset) => {
+    attributes.push({ name, offset });
+  });
+
+  // The line index is a scan of its own, so clean documents skip it
+  if (elements.length === 0 && attributes.length === 0) return { elements: [], attributes: [] };
+
   const positionAt = positionFinder(html);
   /** @type {(a: { offset: number }, b: { offset: number }) => number} */
   const byOffset = (a, b) => a.offset - b.offset;
   /** @type {(found: { name: string, offset: number }[]) => Occurrence[]} */
   const toOccurrences = found => found.sort(byOffset).map(({ name, offset }) => ({ name, ...positionAt(offset) }));
-
-  const elements = [];
-  const attributes = [];
-
-  for (const [element, regex] of elementRegexes) {
-    for (const m of html.matchAll(regex)) elements.push({ name: element, offset: m.index });
-  }
-
-  scanAttributes(html, (name, offset) => attributes.push({ name, offset }));
 
   return { elements: toOccurrences(elements), attributes: toOccurrences(attributes) };
 }
@@ -95,20 +119,20 @@ export function locateMarkup(html) {
 export function checkMarkup(html) {
   if (typeof html !== 'string') throw new TypeError('`html` must be a string');
 
-  // Global regexes keep `lastIndex` between calls, so it’s reset around each test
-  const isFound = (/** @type {RegExp} */ regex) => {
-    regex.lastIndex = 0;
-    const found = regex.test(html);
-    regex.lastIndex = 0;
-    return found;
-  };
+  /** @type {Set<string>} */
+  const namesElements = new Set();
+  for (const m of html.matchAll(elementRegex)) namesElements.add(m[1].toLowerCase());
 
   /** @type {Set<string>} */
   const namesAttributes = new Set();
-  scanAttributes(html, name => namesAttributes.add(name));
+  scanAttributes(html, name => {
+    namesAttributes.add(name);
+    // Once every obsolete attribute is found, nothing can change the result
+    return namesAttributes.size < obsoleteAttributes.length;
+  });
 
   return {
-    elements: obsoleteElements.filter(element => isFound(/** @type {RegExp} */ (elementRegexes.get(element)))),
+    elements: obsoleteElements.filter(element => namesElements.has(element)),
     attributes: obsoleteAttributes.filter(attribute => namesAttributes.has(attribute)),
   };
 }

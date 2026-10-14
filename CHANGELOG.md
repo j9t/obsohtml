@@ -4,6 +4,16 @@ As of version 1.10.0, all notable changes to ObsoHTML are documented in this fil
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.1] - 2026-10-14
+
+### Added
+
+* Added a benchmark with a generated corpus (`npm run benchmark`)
+
+### Changed
+
+* Sped up `locateMarkup()` and `checkMarkup()` by roughly 80–95%, by scanning documents once for all obsolete elements rather than once per element, skipping the line index for clean documents, and stopping the attribute scan once every obsolete attribute is found
+
 ## [2.1.0] - 2026-10-13
 
 ### Fixed

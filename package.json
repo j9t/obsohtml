@@ -37,14 +37,16 @@
     "url": "git+https://github.com/j9t/obsohtml.git"
   },
   "scripts": {
+    "benchmark": "node benchmark/benchmark.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prepare": "git config core.hooksPath .githooks || true",
     "start": "node ./bin/obsohtml.js",
     "test": "npm run test:types && node --test bin/obsohtml.test.js",
+    "test:benchmark": "node --test benchmark/benchmark.test.js",
     "test:types": "tsc"
   },
   "type": "module",
   "types": "src/index.d.ts",
-  "version": "2.1.0"
+  "version": "2.1.1"
 }
