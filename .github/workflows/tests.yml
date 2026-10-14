@@ -44,3 +44,7 @@ jobs:
         run: npm run lint
       - name: "Run tests"
         run: npm test
+      - name: "Run benchmark tests"
+        # The benchmark tooling doesn’t vary by platform or Node version, and isn’t shipped
+        if: matrix.platform == 'ubuntu-latest' && matrix.node == 'lts/*'
+        run: npm run test:benchmark
