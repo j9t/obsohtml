@@ -1,2 +1,4 @@
+benchmark/input/
+benchmark/baseline.json
 node_modules/
 .DS_Store

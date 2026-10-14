@@ -263,6 +263,17 @@ describe('`checkMarkup`', () => {
     assert.deepEqual(elements, []);
   });
 
+  test('Tells apart elements whose names share a prefix', () => {
+    assert.deepEqual(checkMarkup('<frameset><frame>').elements, ['frame', 'frameset']);
+    assert.deepEqual(checkMarkup('<frameset>').elements, ['frameset']);
+    assert.deepEqual(checkMarkup('<noframes><nobr>').elements, ['nobr', 'noframes']);
+  });
+
+  test('Detects every element and attribute in a document with all obsolete attributes', () => {
+    const html = `<img ${obsoleteAttributes.join(' ')}>${obsoleteElements.map(element => `<${element}>`).join('')}<img align>`;
+    assert.deepEqual(checkMarkup(html), { elements: [...obsoleteElements], attributes: [...obsoleteAttributes] });
+  });
+
   test('Does not flag an obsolete attribute name appearing inside a quoted attribute value', () => {
     // “scrolling” inside `content="…"`, “background” inside `content="…"`, and
     // “border” inside `alt="…"` are all text—not actual HTML attributes
@@ -319,6 +330,14 @@ describe('`locateMarkup`', () => {
     ]);
   });
 
+  test('Reads past `>` inside quoted values', () => {
+    const { attributes } = locateMarkup('<img alt="a>b" align=left>\n<img alt = \'>\' title=x=y border=0>');
+    assert.deepEqual(attributes, [
+      { name: 'align', line: 1, col: 16 },
+      { name: 'border', line: 2, col: 26 },
+    ]);
+  });
+
   test('Skips quoted values with whitespace around `=`', () => {
     const { attributes } = locateMarkup('<img alt = "A border" border=0>');
     assert.deepEqual(attributes, [{ name: 'border', line: 1, col: 23 }]);
@@ -329,6 +348,13 @@ describe('`locateMarkup`', () => {
     assert.deepEqual(attributes, [
       { name: 'align', line: 1, col: 6 },
       { name: 'align', line: 1, col: 17 },
+    ]);
+  });
+
+  test('Tells apart elements whose names share a prefix', () => {
+    assert.deepEqual(locateMarkup('<frameset>\n<frame>').elements, [
+      { name: 'frameset', line: 1, col: 1 },
+      { name: 'frame', line: 2, col: 1 },
     ]);
   });
 
