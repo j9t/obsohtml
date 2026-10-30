@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -20,7 +21,7 @@ function run(args, options = {}) {
 }
 
 describe('ObsoHTML', () => {
-  const tempDir = path.join(__dirname, 'temp_test_dir');
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'obsohtml-'));
   const tempFile = path.join(tempDir, 'test.html');
   const tempFileWithAttributes = path.join(tempDir, 'test_with_attributes.html');
   const tempFileWithMidTagAttribute = path.join(tempDir, 'test_mid_tag_attribute.html');
@@ -30,9 +31,6 @@ describe('ObsoHTML', () => {
   const tempTsxFile = path.join(tempDir, 'test.tsx');
 
   before(() => {
-    if (!fs.existsSync(tempDir)) {
-      fs.mkdirSync(tempDir);
-    }
     fs.writeFileSync(tempFile, '<!DOCTYPE html><html><title>Test</title><body><center>Test</center></body></html>');
     fs.writeFileSync(tempFileWithAttributes, '<!DOCTYPE html><html><title>Test</title><body><img src=test.jpg alt=Test align=left></body></html>');
     fs.writeFileSync(tempFileWithMidTagAttribute, '<!DOCTYPE html><html><title>Test</title><body><img align=left src=test.jpg></body></html>');
@@ -75,7 +73,8 @@ describe('ObsoHTML', () => {
   });
 
   test('Detects obsolete elements and attributes using relative path', () => {
-    const { stdout } = run([path.relative(process.cwd(), tempDir)]);
+    // Relative to the temp directory’s parent, as Windows may keep temp on another drive
+    const { stdout } = run([path.basename(tempDir)], { cwd: path.dirname(tempDir) });
     assert.ok(stdout.includes("Found obsolete element 'center'"));
     assert.ok(stdout.includes("Found obsolete attribute 'align'"));
   });
