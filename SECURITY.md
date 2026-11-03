@@ -6,4 +6,4 @@ Only the latest and therefore current version of ObsoHTML is supported. It’s a
 
 ## Reporting a Vulnerability
 
-To report a vulnerability, please use [GitHub’s private security advisories](https://github.com/j9t/obsohtml/security/advisories/new) or email info@meiert.com directly. Do not report vulnerabilities via public issues.
+To report a vulnerability, please use [GitHub’s private security advisories](https://github.com/j9t/obsohtml/security/advisories/new) or email security@meiert.com directly. Do not report vulnerabilities via public issues.
