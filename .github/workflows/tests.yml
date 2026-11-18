@@ -17,6 +17,7 @@ concurrency:
 jobs:
   test:
     strategy:
+      fail-fast: false
       matrix:
         platform: [ubuntu-latest]
         node: ["lts/*", "current"]
@@ -26,6 +27,7 @@ jobs:
             node: "lts/*"
     name: "Node ${{ matrix.node }} (${{ matrix.platform }})"
     runs-on: ${{ matrix.platform }}
+    timeout-minutes: 10
     steps:
       - name: "Check out repository"
         uses: actions/checkout@v7
